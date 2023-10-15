@@ -1,0 +1,2 @@
+from .thermometer import Thermometer
+
