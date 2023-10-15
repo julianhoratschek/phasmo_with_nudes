@@ -1,6 +1,6 @@
 import arcade
 
-from screens.game_screen import GameScreen
+from screens import MenuScreen, GameScreen
 
 
 class GameWindow(arcade.Window):
