@@ -6,7 +6,7 @@ import json
 
 
 class AnimationType(IntEnum):
-    Idle = 0
+    Stopped = 0
     Once = auto()
     Looping = auto()
     PingPong = auto()
@@ -28,7 +28,11 @@ class Animation(arcade.Sprite):
         self._frame_timer: float = 0.0
         self.frame: int = 0
 
+        self.load_from_json(json_filename)
+
+    def load_from_json(self, json_filename: str | Path):
         # TODO Load Textures into self.textures and assign self.animations
+        pass
 
     @property
     def animation(self) -> str:
