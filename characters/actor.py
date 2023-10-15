@@ -14,17 +14,18 @@ class Direction(Flag):
 
 class ActorState(Flag):
     Idling = 0
-    Moving = auto()
-    Running = auto()
     Crouching = auto()
+    Running = auto()
+    Moving = auto()
 
-    def to_animation(self):
-        if ActorState.Crouching in self:
-            return "crouch"
-        if ActorState.Crouching in self:
-            return "run"
-        if ActorState.Moving in self:
-            return "walk"
+    def to_animation(self) -> str:
+        """Returns an animation name according to the current state. States are mutually exclusive, so the order of
+        comparison (and thus definition of states) matters.
+        """
+        for i, state in enumerate(ActorState):
+            if state in self:
+                return ["crouch", "run", "walk"][i]
+
         return "idle"
 
 
@@ -79,8 +80,7 @@ class Actor(Animation):
         if Direction.Left in self.direction:
             self.change_x -= self.speed
 
-        if any(self.velocity):
-            self.state |= ActorState.Moving
+        self.flip_state(ActorState.Moving, any(self.velocity))
 
     def apply_animation(self):
         self.animation = self.state.to_animation()

@@ -1,14 +1,31 @@
 from actor import Actor
 
-from random import random
+from random import random, choice
 from enum import IntEnum, auto
 
 
 class BackgroundStory(IntEnum):
+    # This will be the id for the background story
+    # TODO BackgroundStory Object?
     NoBackground = 0
 
 
 class Ghost(Actor):
+    """Base class for all ghosts. This should be treated as abstract class.
+
+    :cvar LifetimeMin: Minimum time until despawn
+    :cvar LifetimeMax: Maximum time until despawn
+    :cvar SpawnCooldown: Minimum time until next spawn try
+    :cvar HuntCooldown: Minimum time until next hunt
+    :cvar HuntingCutoff: If `mood` is lower than this, hunts may happen.
+
+    :ivar is_active: If true, ghost is currently spawned
+    :ivar mood: determines if the ghost will be hostile
+    :ivar is_hunting: If true, ghost is currently hunting
+    :ivar life_time: time until active ghost will despawn
+    :ivar background_story: ID for current background story   # TODO Use BackgroundStoryObject instead?
+    """
+
     LifetimeMin: float = 0.8
     LifetimeMax: float = 1.2
 
@@ -21,12 +38,12 @@ class Ghost(Actor):
 
     def __init__(self, **kwargs):
         # TODO different Ghost Models?
-        super().__init__("****.json", **kwargs)
-
-        self.is_active: bool = False
+        super().__init__(choice(["***.json", "***.json", "***.json"]), **kwargs)
 
         self._spawn_timer: float = self.SpawnCooldown
         self._hunt_cooldown_timer: float = self.HuntCooldown
+
+        self.is_active: bool = False
 
         self.mood: float = 1.0
         self.is_hunting: bool = False
@@ -69,7 +86,7 @@ class Ghost(Actor):
         #   - old radio
         #       - spiritbox
         #   - pendulum
-        #       - ujia-board
+        #       - Oujia-board
         #   - aura-glasses
         #       - seeing-crystal
         #   - talisman, cross
@@ -77,47 +94,47 @@ class Ghost(Actor):
         # TODO
         #   - ghost seals
         # TODO Line of sight?
-        self.try_change_location()
 
-        if self.can_spawn():
-            self.try_spawn()
+        if not self.spawn():
+            if not self.initialize_hunt():
+                self.randomly_change_location()
+                return
 
         self.set_direction()
         super().on_update(delta_time)
 
-        self.try_despawn(delta_time)
+        self.life_time -= delta_time
+        if self.life_time > 0 and not self.goal_reached():
+            self.despawn(delta_time)
 
-    def try_change_location(self):
+    def randomly_change_location(self):
         # TODO change location
         #   - Some ghost may walk through walls?
         pass
 
-    def can_hunt(self) -> bool:
-        # TODO return true if a hunt is possible (currently not hunting, spawned, mood and cooldown)
-        return False
+    def initialize_hunt(self) -> bool:
+        # TODO return if a hunt is not possible (currently hunting, spawned, mood and cooldown)
 
-    def can_spawn(self) -> bool:
-        # TODO return true if spawning is possible (not currently active, spawntimer < 0 etc.)
-        return False
-
-    def try_initialize_hunt(self):
         # TODO randomly start a hunt.
         #   - become visible
         #   - is_hunting true
         #   - extend life_time?
         #   - different pathfinding?
         self.is_hunting = True
+        return self.is_hunting
 
-    def try_spawn(self):
+    def spawn(self) -> bool:
+        # TODO return if spawning is not possible (currently active, spawntimer > 0 etc.)
+
         # TODO Spawn in its room? Or spawn randomly, but preferring its own room?
         # TODO better lifetime distribution
         self.life_time = random() * self.LifetimeMax
+        self.is_active = True
+        return self.is_active
 
-    def try_despawn(self, delta_time: float):
-        self.life_time -= delta_time
-        if self.life_time > 0 and not self.goal_reached():
-            return
+    def despawn(self, delta_time: float):
         # TODO Despawn ghost
+        pass
 
     def goal_reached(self) -> bool:
         # TODO if ghost strives for a goal after spawning, return true if it was reached

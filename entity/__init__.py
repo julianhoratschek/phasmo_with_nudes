@@ -1,2 +1,2 @@
-from .thermometer import Thermometer
+
 

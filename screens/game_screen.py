@@ -1,5 +1,6 @@
 from util import LDtkMap, KeyMap, KeyType
 from characters import Player, Ghost
+from ui import ItemFrame
 
 import arcade
 
@@ -8,10 +9,11 @@ class GameScreen(arcade.View):
     def __init__(self):
         super().__init__()
 
-        self._placing_item = False
+        self._placing_item = False          # Indicates if the player currently places an item
 
         self.scene = arcade.Scene()
 
+        # TODO random Map/selected map Loader
         self.map = LDtkMap("***.json")
         self.map.add_to_scene(self.scene)
 
@@ -20,22 +22,22 @@ class GameScreen(arcade.View):
         self.player = Player()
         self.scene.add_sprite("player", self.player)
 
-        self.ghost = Ghost("***.json")
+        # TODO random Ghost selection
+        self.ghost = Ghost()
         self.scene.add_sprite("ghost", self.ghost)
+
+        self.ui = arcade.SpriteList(use_spatial_hash=True)
+        self.ui.append(ItemFrame())
+        self.scene.add_sprite_list("ui", sprite_list=self.ui)
 
     def on_draw(self):
         # TODO draw item transparent when placed
+        # TODO draw currently not visible rooms dark
+        # TODO shaders for light and sight?
         self.scene.draw(pixelated=True)
 
     def on_update(self, delta_time: float):
-        # TODO Player
-        #   - Move
-        #   - Collide
         # TODO Ghost
-        #   - Move
-        #   - Change Room
-        #   - Evidence
-        #   - Hunt?
         #   - Sound?
         # TODO Environment?
         self.scene.update_animation(delta_time)

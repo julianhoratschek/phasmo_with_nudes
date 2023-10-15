@@ -1,7 +1,7 @@
-from .entity import Entity
+import arcade
 
 
-class Thermometer(Entity):
+class ItemFrame(arcade.BasicSprite):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
