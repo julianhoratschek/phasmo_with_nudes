@@ -3,7 +3,7 @@ from util.aseprite import Animation
 
 import arcade
 
-
+#hallo
 class Direction(Flag):
     Idle = 0
     Up = auto()
