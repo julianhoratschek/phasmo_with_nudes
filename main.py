@@ -36,7 +36,7 @@ class GameView(arcade.View):
         # TODO NPC Interactions
         # TODO Player do move
         # TODO Camera movement
-        pass
+        self.scene.update()
 
     def on_key_press(self, symbol: int, modifiers: int):
         # TODO Player Movement
@@ -45,7 +45,18 @@ class GameView(arcade.View):
         # TODO Menu?
         # TODO Interaction? Taking Items? Place Items?
         # TODO Toggle Scrolling
-        pass
+
+        if symbol == arcade.key.W:
+            self.player.change_y = self.player_speed
+
+        if symbol == arcade.key.A:
+            self.player.change_x = -self.player_speed
+
+        if symbol == arcade.key.S:
+            self.player.change_y = -self.player_speed
+
+        if symbol == arcade.key.D:
+            self.player.change_x = self.player_speed
 
     def on_key_release(self, symbol: int, modifiers: int):
         # TODO Not running forever
