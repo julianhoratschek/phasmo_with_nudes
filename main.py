@@ -8,11 +8,6 @@ class GameView(arcade.View):
     def __init__(self):
         super().__init__()
 
-        self.scene = arcade.Scene()
-
-        self.ui_layer = arcade.SpriteList()
-        self.scene.add_sprite_list(name="ui_layer", sprite_list=self.ui_layer)
-
         # TODO UI-Layer (Spritelist)
         # TODO Veil-Layer
         # TODO Layers for Environment (Floor, Decorations, Walls)
@@ -20,9 +15,19 @@ class GameView(arcade.View):
         # TODO Interactable Layer
         # TODO Player, Ghost, NPC
 
+        self.scene = arcade.Scene()
+
+        self.ui_layer = arcade.SpriteList()
+        self.scene.add_sprite_list(name="ui_layer", sprite_list=self.ui_layer)
+
+        self.player = arcade.Sprite("res/sprites/star.png")
+        self.scene.add_sprite(name="player", sprite=self.player)
+        self.player_speed = 10
+
     def on_draw(self):
         # TODO Draw everything
-        self.scene.draw()
+        self.clear()
+        self.scene.draw(pixelated=True)
 
     def on_update(self, delta_time):
         # TODO Update Animations etc.
@@ -45,7 +50,10 @@ class GameView(arcade.View):
     def on_key_release(self, symbol: int, modifiers: int):
         # TODO Not running forever
         # TODO stop placing Items?
-        pass
+        if symbol in [arcade.key.W, arcade.key.S]:
+            self.player.change_y = 0
+        if symbol in [arcade.key.A, arcade.key.D]:
+            self.player.change_x = 0
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         # TODO Interactions?
@@ -73,6 +81,4 @@ if __name__ == "__main__":
     window = arcade.Window()
     window.show_view(GameView())
     window.run()
-
-
 
