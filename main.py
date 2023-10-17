@@ -91,10 +91,9 @@ class GameView(arcade.View):
     def on_key_release(self, symbol: int, modifiers: int):
         # TODO Not running forever
         # TODO stop placing Items?
-        if symbol in [arcade.key.W, arcade.key.S]:
-            self.player.change_y = 0
-        if symbol in [arcade.key.A, arcade.key.D]:
-            self.player.change_x = 0
+        if symbol in GameView.DirectionKeys:
+            self.player.direction &= ~GameView.DirectionKeys[symbol]
+
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         # TODO Interactions?
