@@ -1,4 +1,5 @@
 import arcade
+from util.aseprite import Animation
 
 
 # TODO GameWindow/GameView
@@ -15,9 +16,9 @@ class Direction(Flag):
     Right = auto()  # 0b1000 0b0111
 
 
-class Player(arcade.Sprite):
+class Player(Animation):
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super().__init__("res/sprites/dude.json", **kwargs)
 
         self.direction: Direction = Direction.Idle
         self.speed: float = 10.0
@@ -36,6 +37,8 @@ class Player(arcade.Sprite):
 
         if Direction.Left in self.direction:
             self.change_x -= self.speed
+
+        self.set_animation("walk" if any(self.velocity) else "idle")
 
 
 class GameView(arcade.View):
@@ -59,7 +62,7 @@ class GameView(arcade.View):
         self.ui_layer = arcade.SpriteList()
         self.scene.add_sprite_list(name="ui_layer", sprite_list=self.ui_layer)
 
-        self.player = Player(path_or_texture="res/sprites/star.png")
+        self.player = Player(scale=4)
         self.scene.add_sprite(name="player", sprite=self.player)
 
     def on_draw(self):
@@ -74,6 +77,7 @@ class GameView(arcade.View):
         # TODO NPC Interactions
         # TODO Player do move
         # TODO Camera movement
+        self.scene.update_animation(delta_time)
         self.scene.on_update(delta_time)
         self.scene.update()
 
@@ -93,7 +97,6 @@ class GameView(arcade.View):
         # TODO stop placing Items?
         if symbol in GameView.DirectionKeys:
             self.player.direction &= ~GameView.DirectionKeys[symbol]
-
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         # TODO Interactions?
