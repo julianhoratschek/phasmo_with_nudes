@@ -36,6 +36,10 @@ class TileMap:
         self.stairs: arcade.SpriteList = arcade.SpriteList()
         self.furniture: arcade.SpriteList = arcade.SpriteList()
 
+        #NEW!
+        self.player_pos: arcade.SpriteList = arcade.SpriteList()
+        self.npc_pos: arcade.SpriteList = arcade.SpriteList()
+
     def load_level(self, level_nr: int):
         lvl_path = TileMap.LevelPath / f"Level_{level_nr}"
         self.tile_map = arcade.load_texture(lvl_path / "_composite.png")
@@ -72,6 +76,21 @@ class TileMap:
             for stair_obj, dest in stairs_dict.values():
                 stair_obj.destination = stairs_dict[dest][0]
                 self.stairs.append(stair_obj)
+
+            #NEW!
+            #Adds the initial Player and NPC Positions as SpriteLists with Entity Types
+            for npc in entity_json["entities"]["NPC"]:
+                self.npc_pos.append(Entity(
+                    iid=npc["iid"],
+                    center_x=npc["x"],
+                    center_y=npc["y"]))
+
+            player = entity_json["entities"]["Player"][0]
+            self.player_pos.append(Entity(
+                iid=player["iid"],
+                center_x=player["x"],
+                center_y=player["y"]))
+
         pass
 
 
