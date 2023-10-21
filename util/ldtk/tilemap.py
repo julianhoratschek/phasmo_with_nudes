@@ -2,27 +2,7 @@ import arcade
 import json
 
 from pathlib import Path
-
-
-class Entity(arcade.Sprite):
-    def __init__(self, iid: str, **kwargs):
-        super().__init__(**kwargs)
-
-        self.entity_id: str = iid
-
-
-class Stairs(Entity):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-        self.destination = None
-
-
-class Furniture(Entity):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-        self.interactable: bool = False
+from .entity import Furniture, Stairs, Entity
 
 
 class TileMap:
@@ -36,7 +16,6 @@ class TileMap:
         self.stairs: arcade.SpriteList = arcade.SpriteList()
         self.furniture: arcade.SpriteList = arcade.SpriteList()
 
-        #NEW!
         self.player_pos: arcade.SpriteList = arcade.SpriteList()
         self.npc_pos: arcade.SpriteList = arcade.SpriteList()
 
@@ -65,7 +44,7 @@ class TileMap:
                 iid=furniture["iid"],
                 center_x=furniture["x"],
                 center_y=furniture["y"])
-            new_furniture.interactable = furniture["customFields"]["Interactable"]
+            new_furniture.can_interact = furniture["customFields"]["Interactable"]
             self.furniture.append(new_furniture)
 
         stairs_dict: dict[str:tuple[Stairs, str]] = dict()
@@ -80,6 +59,8 @@ class TileMap:
 
         for npc in entity_json["entities"]["NPC"]:
             # TODO Which NPC stands where? Part of Backstory-Class?
+            #   if in Backstory: Do we need more than a position?
+            #   if yes: why Entity and not a subclass of Entity?
             self.npc_pos.append(Entity(
                 iid=npc["iid"],
                 center_x=npc["x"],
