@@ -7,6 +7,7 @@ from characters import Player, Direction
 
 # TODO Furniture: Inventory, spawning backstory, more furniture
 
+
 class GameView(arcade.View):
     DirectionKeys = {arcade.key.W: Direction.Up,
                      arcade.key.S: Direction.Down,
@@ -23,12 +24,12 @@ class GameView(arcade.View):
         # TODO Interactable Layer
         # TODO Player, Ghost, NPC
 
-        self.scene = arcade.Scene()
+        self.scene: arcade.Scene = arcade.Scene()
 
-        self.ui_layer = arcade.SpriteList()
+        self.ui_layer: arcade.SpriteList = arcade.SpriteList()
         self.scene.add_sprite_list(name="ui_layer", sprite_list=self.ui_layer)
 
-        self.player = Player(scale=4)
+        self.player: Player = Player()
         self.scene.add_sprite(name="player", sprite=self.player)
 
     def on_draw(self):
@@ -46,6 +47,13 @@ class GameView(arcade.View):
         self.scene.update_animation(delta_time)
         self.scene.on_update(delta_time)
         self.scene.update()
+        self.follow_player()
+        # self.cam.update()
+
+    def follow_player(self):
+        cam_x, cam_y = (self.player.center_x - (self.cam.viewport_width * self.cam.zoom / 2),
+                        self.player.center_y - (self.cam.viewport_height * self.cam.zoom / 2))
+        self.cam.move_to((cam_x, cam_y), speed=0.7)
 
     def on_key_press(self, symbol: int, modifiers: int):
         # TODO Player Movement
@@ -83,7 +91,10 @@ class GameView(arcade.View):
     def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
         # TODO Scroll inventory?
         # TODO Zoom in and out (strg + scroll?)
-        pass
+        if scroll_y > 0:
+            self.cam.zoom += 0.1
+        elif scroll_y < 0:
+            self.cam.zoom -= 0.1
 
 
 if __name__ == "__main__":
