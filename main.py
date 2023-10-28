@@ -2,6 +2,8 @@ import arcade
 from characters import Player, Direction
 from util.ldtk import TileMap
 
+from arcade.experimental import Shadertoy
+
 # TODO: Spawns on Integer Grid
 # TODO: Ghost selects goal/lifetime
 # TODO: Ghost Backstory, different backstories "patched"
@@ -40,13 +42,27 @@ class GameView(arcade.View):
         self.player.position = self.map.player_pos
         self.scene.add_sprite(name="player", sprite=self.player)
 
+        window_size = self.window.get_size()
+
+        self.shadertoy = Shadertoy.create_from_file(size=window_size, path="shaders/test.glsl")
+        self.channel_0 = self.shadertoy.ctx.framebuffer(color_attachments=[self.shadertoy.ctx.texture(size=window_size,
+                                                                                                      components=4)])
+        self.shadertoy.channel_0 = self.channel_0.color_attachments[0]
+
     def on_draw(self):
         # TODO Draw everything
-        self.clear()
-
-        self.cam.use()
+        self.channel_0.use()
+        self.channel_0.clear()
 
         self.map.draw_level()
+
+        self.window.use()
+        self.cam.use()
+        self.clear()
+
+        # self.shadertoy.program['playerPosition'] = self.player.position
+        self.shadertoy.render()
+
         self.scene.draw(pixelated=True)
 
         self.player.draw_hit_box(color=arcade.color.RED)
