@@ -49,6 +49,8 @@ class GameView(arcade.View):
         self.map.draw_level()
         self.scene.draw(pixelated=True)
 
+        self.player.draw_hit_box(color=arcade.color.RED)
+
         # TODO UI Cam
 
     def on_update(self, delta_time):

@@ -15,7 +15,10 @@ class Animation(arcade.Sprite):
         self._frame_timer: float = 0.0
 
         self.current_animation: str = list(self.animations.keys())[0]
-        self.frame_index: int = 0
+        self.frame_index: int = self.animations[self.current_animation][0]
+
+        # This is needed for Hitbox-Assignment to work
+        self.texture = self.textures[self.frame_index]
 
     def set_animation(self, new_animation: str):
         if self.current_animation == new_animation:

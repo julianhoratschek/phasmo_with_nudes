@@ -34,7 +34,7 @@ class TileMap:
 
     def collision(self, at_position: tuple[int, int]) -> bool:
         tile_pos = self.pixel_to_tile(at_position)
-        print(f"@ Tile[{tile_pos[1]}][{tile_pos[0]}] {'collision' if self.room_grid[tile_pos[1]][tile_pos[0]] != 1 else 'no' }")
+        # print(f"@ Tile[{tile_pos[1]}][{tile_pos[0]}] {'collision' if self.room_grid[tile_pos[1]][tile_pos[0]] != 1 else 'no' }")
         return self.room_grid[tile_pos[1]][tile_pos[0]] != 1
 
     def load_level(self, level_nr: int):
