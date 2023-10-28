@@ -20,8 +20,7 @@ class TileMap:
         self.width: int = 0
         self.height: int = 0
 
-        # TODO why Spritelists?
-        # self.player_pos: arcade.SpriteList = arcade.SpriteList()
+        self.player_pos: tuple[int, int] = (0, 0)
         # self.npc_pos: arcade.SpriteList = arcade.SpriteList()
 
     def draw_level(self):
@@ -88,14 +87,13 @@ class TileMap:
         #         center_x=npc["x"],
         #         center_y=npc["y"]))
         #
-        # # TODO: Do we need a Player-Entity?
-        # #  Why in a Spritelist? How may Player-entities are possible per map?
-        # #  We have a Player-Class. What Information do we need from ldtk?
-        # player = entity_json["entities"]["Player"][0]
-        # self.player_pos.append(Entity(
-        #     iid=player["iid"],
-        #     center_x=player["x"],
-        #     center_y=player["y"]))
+
+        self.width = json_data["width"]
+        self.height = json_data["height"]
+
+        player = json_data["entities"]["Player"][0]
+        self.player_pos = (player["x"] - self.width / 2, self.height / 2 - player["y"])
+
 
 
 
