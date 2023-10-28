@@ -6,7 +6,8 @@ from .entity import Furniture, Stairs
 
 
 class TileMap:
-    LevelPath: Path = Path("res/maps/MapLayout/simplified")
+    LevelPath: Path = Path("res/maps/phasmo_world/simplified")
+    TileSize: int = 32
 
     def __init__(self):
         self.tile_map: arcade.Sprite | None = None
@@ -15,6 +16,9 @@ class TileMap:
 
         self.stairs: arcade.SpriteList = arcade.SpriteList()
         self.furniture: arcade.SpriteList = arcade.SpriteList()
+
+        self.width: int = 0
+        self.height: int = 0
 
         # TODO why Spritelists?
         # self.player_pos: arcade.SpriteList = arcade.SpriteList()
@@ -25,25 +29,36 @@ class TileMap:
         self.furniture.draw(pixelated=True)
         self.stairs.draw(pixelated=True)
 
+    def pixel_to_tile(self, position: tuple[int, int]) -> tuple[int, int]:
+        pos_ldtk = (position[0] + self.width / 2, self.height / 2 - position[1])
+        return int(pos_ldtk[0] // TileMap.TileSize), int(pos_ldtk[1] // TileMap.TileSize)
+
+    def collision(self, at_position: tuple[int, int]) -> bool:
+        tile_pos = self.pixel_to_tile(at_position)
+        print(f"@ Tile[{tile_pos[1]}][{tile_pos[0]}] {'collision' if self.room_grid[tile_pos[1]][tile_pos[0]] != 1 else 'no' }")
+        return self.room_grid[tile_pos[1]][tile_pos[0]] != 1
+
     def load_level(self, level_nr: int):
         lvl_path = TileMap.LevelPath / f"Level_{level_nr}"
         self.tile_map = arcade.Sprite(arcade.load_texture(lvl_path / "_composite.png"))
 
-        with open(lvl_path / "Rooms.csv", "r") as rooms_file:
+        with open(lvl_path / "RoomsNFloors.csv", "r") as rooms_file:
             for line in rooms_file.readlines():
                 self.room_grid.append([int(x) for x in line.split(",") if x.isdigit()])
 
-        with open("res/maps/MapLayout.ldtk", "r") as map_file:
+        print(self.room_grid)
+
+        with open("res/maps/phasmo_world.ldtk", "r") as map_file:
             json_data = json.load(map_file)
 
-        for layer in json_data["defs"]["layers"]:
-            if layer["identifier"] == "Rooms":
-                for room_name in layer["intGridValues"]:
-                    self.room_names.append(room_name["identifier"])
-                break
+        #for layer in json_data["defs"]["layers"]:
+        #    if layer["identifier"] == "Rooms":
+        #        for room_name in layer["intGridValues"]:
+        #            self.room_names.append(room_name["identifier"])
+        #        break
 
-        with open(lvl_path / "data.json", "r") as entity_file:
-            entity_json = json.load(entity_file)
+        with open(lvl_path / "data.json", "r") as data_file:
+            json_data = json.load(data_file)
 
         #for furniture in entity_json["entities"]["Furniture"]:
         #    new_furniture = Furniture(

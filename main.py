@@ -30,15 +30,15 @@ class GameView(arcade.View):
         self.ui_layer: arcade.SpriteList = arcade.SpriteList()
         self.scene.add_sprite_list(name="ui_layer", sprite_list=self.ui_layer)
 
-        self.player: Player = Player()
-        self.scene.add_sprite(name="player", sprite=self.player)
-
         self.map = TileMap()
-
         self.map.load_level(level_nr=0)
 
         self.cam = arcade.Camera()
         self.cam.zoom = 0.7
+
+        self.player: Player = Player()
+        self.scene.add_sprite(name="player", sprite=self.player)
+        self.player.position = self.map.player_pos
 
     def on_draw(self):
         # TODO Draw everything
@@ -60,6 +60,10 @@ class GameView(arcade.View):
         # TODO Camera movement
         self.scene.update_animation(delta_time)
         self.scene.on_update(delta_time)
+
+        if self.map.collision(self.player.next_position()):
+            self.player.on_collision()
+
         self.scene.update()
         self.follow_player()
 

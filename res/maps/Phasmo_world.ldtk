@@ -22,8 +22,8 @@
 	"defaultPivotX": 0,
 	"defaultPivotY": 0,
 	"defaultGridSize": 16,
-	"defaultEntityWidth": null,
-	"defaultEntityHeight": null,
+	"defaultEntityWidth": 16,
+	"defaultEntityHeight": 16,
 	"bgColor": "#40465B",
 	"defaultLevelBgColor": "#696A79",
 	"minifyJson": false,
@@ -762,11 +762,11 @@
 			"tileRect": null,
 			"uiTileRect": null,
 			"nineSliceBorders": [],
-			"maxCount": 0,
+			"maxCount": 1,
 			"limitScope": "PerLevel",
 			"limitBehavior": "MoveLastOne",
-			"pivotX": 0,
-			"pivotY": 0,
+			"pivotX": 0.5,
+			"pivotY": 0.5,
 			"fieldDefs": []
 		}
 	], "tilesets": [
@@ -841,18 +841,18 @@
 					"entityInstances": [
 						{
 							"__identifier": "Player",
-							"__grid": [37,16],
-							"__pivot": [0,0],
+							"__grid": [40,15],
+							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": null,
 							"__smartColor": "#BE4A2F",
-							"__worldX": 118,
-							"__worldY": 156,
-							"iid": "52795530-6280-11ee-956a-ef29351473c2",
+							"__worldX": 208,
+							"__worldY": 112,
+							"iid": "a16143a0-6280-11ee-a91d-9f19ea013f69",
 							"width": 32,
 							"height": 32,
 							"defUid": 46,
-							"px": [1206,540],
+							"px": [1296,496],
 							"fieldInstances": []
 						}
 					]
