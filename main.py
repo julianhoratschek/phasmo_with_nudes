@@ -6,7 +6,7 @@ from arcade.experimental import Shadertoy
 
 # TODO: Spawns on Integer Grid
 # TODO: Ghost selects goal/lifetime
-# TODO: Ghost Backstory, different backstories "patched"
+# TODO: Ghost Backstory, different backstories "patched"a
 
 # TODO Furniture: Inventory, spawning backstory, more furniture
 
