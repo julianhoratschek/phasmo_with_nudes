@@ -9,6 +9,8 @@ class TileMap:
     LevelPath: Path = Path("res/maps/phasmo_world/simplified")
     TileSize: int = 32
 
+    CollisionLayer: str = "RoomsNFloors.csv"
+
     def __init__(self):
         self.tile_map: arcade.Sprite | None = None
         self.room_grid: list[list[int]] = []
@@ -17,8 +19,8 @@ class TileMap:
         self.stairs: arcade.SpriteList = arcade.SpriteList()
         self.furniture: arcade.SpriteList = arcade.SpriteList()
 
-        self.width: int = 0
-        self.height: int = 0
+        self.width_half: int = 0
+        self.height_half: int = 0
 
         self.player_pos: tuple[int, int] = (0, 0)
         # self.npc_pos: arcade.SpriteList = arcade.SpriteList()
@@ -29,19 +31,19 @@ class TileMap:
         self.stairs.draw(pixelated=True)
 
     def pixel_to_tile(self, position: tuple[int, int]) -> tuple[int, int]:
-        pos_ldtk = (position[0] + self.width / 2, self.height / 2 - position[1])
-        return int(pos_ldtk[0] // TileMap.TileSize), int(pos_ldtk[1] // TileMap.TileSize)
+        x, y = position
+        return (int((x + self.width_half) / TileMap.TileSize),
+                int((self.height_half - y) / TileMap.TileSize))
 
-    def collision(self, at_position: tuple[int, int]) -> bool:
-        tile_pos = self.pixel_to_tile(at_position)
-        # print(f"@ Tile[{tile_pos[1]}][{tile_pos[0]}] {'collision' if self.room_grid[tile_pos[1]][tile_pos[0]] != 1 else 'no' }")
-        return self.room_grid[tile_pos[1]][tile_pos[0]] != 1
+    def wall_collision(self, at_position: tuple[int, int]) -> bool:
+        x, y = self.pixel_to_tile(at_position)
+        return self.room_grid[y][x] != 1
 
     def load_level(self, level_nr: int):
         lvl_path = TileMap.LevelPath / f"Level_{level_nr}"
         self.tile_map = arcade.Sprite(arcade.load_texture(lvl_path / "_composite.png"))
 
-        with open(lvl_path / "RoomsNFloors.csv", "r") as rooms_file:
+        with open(lvl_path / TileMap.CollisionLayer, "r") as rooms_file:
             for line in rooms_file.readlines():
                 self.room_grid.append([int(x) for x in line.split(",") if x.isdigit()])
 
@@ -88,11 +90,11 @@ class TileMap:
         #         center_y=npc["y"]))
         #
 
-        self.width = json_data["width"]
-        self.height = json_data["height"]
+        self.width_half = int(json_data["width"] / 2)
+        self.height_half = int(json_data["height"] / 2)
 
         player = json_data["entities"]["Player"][0]
-        self.player_pos = (player["x"] - self.width / 2, self.height / 2 - player["y"])
+        self.player_pos = (player["x"] - self.width_half, self.height_half - player["y"])
 
 
 

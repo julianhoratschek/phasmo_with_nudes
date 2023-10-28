@@ -20,7 +20,8 @@ class Player(Animation):
         self.direction: Direction = Direction.Idle
         self.speed: float = 2.0
 
-        self.hit_box = arcade.hitbox.RotatableHitBox(points=[(-8, -16), (8, -16), (8, -11), (-8, -11)])
+        self.hit_box = arcade.hitbox.RotatableHitBox(points=[(-8, -16), (8, -16),
+                                                             (8, -11), (-8, -11)])
 
     # TODO Interact
     # TODO Collision
@@ -29,8 +30,9 @@ class Player(Animation):
     # TODO Hiding
 
     def get_next_positions(self) -> list[tuple[int, int]]:
-        for point in self.hit_box.get_adjusted_points():
-            yield point[0] + self.change_x, point[1] + self.change_y
+        # CHANGED: You can unpack tuples in the for-loop
+        for x, y in self.hit_box.get_adjusted_points():
+            yield x + self.change_x, y + self.change_y
 
     def on_collision(self):
         self.change_x, self.change_y = 0.0, 0.0

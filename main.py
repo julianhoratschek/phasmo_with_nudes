@@ -37,8 +37,8 @@ class GameView(arcade.View):
         self.cam.zoom = 0.7
 
         self.player: Player = Player()
-        self.scene.add_sprite(name="player", sprite=self.player)
         self.player.position = self.map.player_pos
+        self.scene.add_sprite(name="player", sprite=self.player)
 
     def on_draw(self):
         # TODO Draw everything
@@ -64,7 +64,7 @@ class GameView(arcade.View):
         self.scene.on_update(delta_time)
 
         for next_position in self.player.get_next_positions():
-            if self.map.collision(next_position):
+            if self.map.wall_collision(next_position):
                 self.player.on_collision()
 
         self.scene.update()
