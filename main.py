@@ -49,6 +49,8 @@ class GameView(arcade.View):
         self.map.draw_level()
         self.scene.draw(pixelated=True)
 
+        # TODO UI Cam
+
     def on_update(self, delta_time):
         # TODO Update Animations etc.
 
@@ -60,12 +62,10 @@ class GameView(arcade.View):
         self.scene.on_update(delta_time)
         self.scene.update()
         self.follow_player()
-        # self.cam.update()
 
     def follow_player(self):
-        cam_x, cam_y = (self.player.center_x - (self.cam.viewport_width * self.cam.zoom / 2),
-                        self.player.center_y - (self.cam.viewport_height * self.cam.zoom / 2))
-        self.cam.move_to((cam_x, cam_y), speed=0.7)
+        self.cam.move_to((self.player.center_x - (self.cam.viewport_width * self.cam.zoom / 2),
+                          self.player.center_y - (self.cam.viewport_height * self.cam.zoom / 2)))
 
     def on_key_press(self, symbol: int, modifiers: int):
         # TODO Player Movement
@@ -104,9 +104,9 @@ class GameView(arcade.View):
         # TODO Scroll inventory?
         # TODO Zoom in and out (strg + scroll?)
         if scroll_y > 0:
-            self.cam.zoom += 0.1
-        elif scroll_y < 0:
             self.cam.zoom -= 0.1
+        elif scroll_y < 0:
+            self.cam.zoom += 0.1
 
 
 if __name__ == "__main__":
