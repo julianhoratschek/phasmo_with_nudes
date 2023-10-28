@@ -1,0 +1,29 @@
+{
+	"identifier": "Level_0",
+	"uniqueIdentifer": "c3bf98e0-6280-11ee-956a-699e2598b5a4",
+	"x": -1088,
+	"y": -384,
+	"width": 1536,
+	"height": 960,
+	"bgColor": "#696A79",
+	"neighbourLevels": [],
+	"customFields" : {},
+	"layers": [
+		"WallsNFloors.png"
+	],
+	"entities": {
+		"Player": [
+			{
+				"id": "Player",
+				"iid": "a16143a0-6280-11ee-a91d-9f19ea013f69",
+				"layer": "Entities",
+				"x": 1296,
+				"y": 496,
+				"width": 32,
+				"height": 32,
+				"color": 12470831,
+				"customFields" : {}
+			}
+		]
+	}
+}
