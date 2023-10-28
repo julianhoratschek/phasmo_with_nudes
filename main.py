@@ -66,6 +66,7 @@ class GameView(arcade.View):
         for next_position in self.player.get_next_positions():
             if self.map.wall_collision(next_position):
                 self.player.on_collision()
+                break
 
         self.scene.update()
         self.follow_player()

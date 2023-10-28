@@ -6,10 +6,11 @@ from .entity import Furniture, Stairs
 
 
 class TileMap:
-    LevelPath: Path = Path("res/maps/phasmo_world/simplified")
-    TileSize: int = 32
+    WorldName: str = "phasmo_world"
+    CollisionLayer: str = "RoomsNFloors"
 
-    CollisionLayer: str = "RoomsNFloors.csv"
+    LevelPath: Path = Path(f"res/maps/{WorldName}/simplified")
+    TileSize: int = 32
 
     def __init__(self):
         self.tile_map: arcade.Sprite | None = None
@@ -31,9 +32,8 @@ class TileMap:
         self.stairs.draw(pixelated=True)
 
     def pixel_to_tile(self, position: tuple[int, int]) -> tuple[int, int]:
-        x, y = position
-        return (int((x + self.width_half) / TileMap.TileSize),
-                int((self.height_half - y) / TileMap.TileSize))
+        return (int((position[0] + self.width_half) / TileMap.TileSize),
+                int((self.height_half - position[1]) / TileMap.TileSize))
 
     def wall_collision(self, at_position: tuple[int, int]) -> bool:
         x, y = self.pixel_to_tile(at_position)
@@ -43,14 +43,12 @@ class TileMap:
         lvl_path = TileMap.LevelPath / f"Level_{level_nr}"
         self.tile_map = arcade.Sprite(arcade.load_texture(lvl_path / "_composite.png"))
 
-        with open(lvl_path / TileMap.CollisionLayer, "r") as rooms_file:
+        with open(lvl_path / f"{TileMap.CollisionLayer}.csv", "r") as rooms_file:
             for line in rooms_file.readlines():
                 self.room_grid.append([int(x) for x in line.split(",") if x.isdigit()])
 
-        print(self.room_grid)
-
-        with open("res/maps/phasmo_world.ldtk", "r") as map_file:
-            json_data = json.load(map_file)
+        #with open(f"res/maps/{TileMap.WorldName}.ldtk", "r") as map_file:
+        #    json_data = json.load(map_file)
 
         #for layer in json_data["defs"]["layers"]:
         #    if layer["identifier"] == "Rooms":
@@ -60,6 +58,12 @@ class TileMap:
 
         with open(lvl_path / "data.json", "r") as data_file:
             json_data = json.load(data_file)
+
+        self.width_half = int(json_data["width"] / 2)
+        self.height_half = int(json_data["height"] / 2)
+
+        player = json_data["entities"]["Player"][0]
+        self.player_pos = (player["x"] - self.width_half, self.height_half - player["y"])
 
         #for furniture in entity_json["entities"]["Furniture"]:
         #    new_furniture = Furniture(
@@ -88,15 +92,4 @@ class TileMap:
         #         iid=npc["iid"],
         #         center_x=npc["x"],
         #         center_y=npc["y"]))
-        #
-
-        self.width_half = int(json_data["width"] / 2)
-        self.height_half = int(json_data["height"] / 2)
-
-        player = json_data["entities"]["Player"][0]
-        self.player_pos = (player["x"] - self.width_half, self.height_half - player["y"])
-
-
-
-
 
