@@ -33,8 +33,9 @@ class Player(Animation):
     # TODO Running
     # TODO Hiding
 
-    def next_position(self) -> tuple[int, int]:
-        return int(self.center_x + self.change_x), int(self.center_y + self.change_y)
+    def get_next_positions(self) -> list[tuple[int, int]]:
+        for point in self.foot_box:
+            yield point[0] + self.change_x + self.center_x, point[1] + self.change_y + self.center_y
 
     def on_collision(self):
         self.change_x, self.change_y = 0.0, 0.0
