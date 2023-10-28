@@ -1,4 +1,7 @@
 from enum import Flag, auto
+
+import arcade.hitbox
+
 from util.aseprite import Animation
 
 
@@ -16,6 +19,13 @@ class Player(Animation):
 
         self.direction: Direction = Direction.Idle
         self.speed: float = 2.0
+
+        self.foot_box = [[-16, -16],
+                         [-16, -11],
+                         [16, -16],
+                         [16, -11]]
+
+        # self.hit_box = arcade.hitbox.RotatableHitBox(points=[(0, 0), (32, 0), (32, 32), (0, 32)])
 
     # TODO Interact
     # TODO Collision

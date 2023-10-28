@@ -61,8 +61,9 @@ class GameView(arcade.View):
         self.scene.update_animation(delta_time)
         self.scene.on_update(delta_time)
 
-        if self.map.collision(self.player.next_position()):
-            self.player.on_collision()
+        for next_position in self.player.get_next_positions():
+            if self.map.collision(next_position):
+                self.player.on_collision()
 
         self.scene.update()
         self.follow_player()
