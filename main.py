@@ -1,5 +1,6 @@
 import arcade
 from characters import Player, Direction
+from util.ldtk import TileMap
 
 # TODO: Spawns on Integer Grid
 # TODO: Ghost selects goal/lifetime
@@ -32,9 +33,20 @@ class GameView(arcade.View):
         self.player: Player = Player()
         self.scene.add_sprite(name="player", sprite=self.player)
 
+        self.map = TileMap()
+
+        self.map.load_level(level_nr=0)
+
+        self.cam = arcade.Camera()
+        self.cam.zoom = 0.7
+
     def on_draw(self):
         # TODO Draw everything
         self.clear()
+
+        self.cam.use()
+
+        self.map.draw_level()
         self.scene.draw(pixelated=True)
 
     def on_update(self, delta_time):

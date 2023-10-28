@@ -15,7 +15,7 @@ class Player(Animation):
         super().__init__("res/sprites/dude.json", **kwargs)
 
         self.direction: Direction = Direction.Idle
-        self.speed: float = 10.0
+        self.speed: float = 5.0
 
     def on_update(self, delta_time: float = 1/60):
         self.change_x, self.change_y = 0.0, 0.0
