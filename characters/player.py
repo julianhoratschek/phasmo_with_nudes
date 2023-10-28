@@ -25,6 +25,9 @@ class Player(Animation):
 
     # TODO Interact
     # TODO Collision
+    #   ghost collision
+    #   furniture collision
+    #   door collision
     # TODO Inventory
     # TODO Running
     # TODO Hiding
