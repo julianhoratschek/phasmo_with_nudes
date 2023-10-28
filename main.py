@@ -10,7 +10,6 @@ from arcade.experimental import Shadertoy
 
 # TODO Furniture: Inventory, spawning backstory, more furniture
 
-
 class GameView(arcade.View):
     DirectionKeys = {arcade.key.W: Direction.Up,
                      arcade.key.S: Direction.Down,
