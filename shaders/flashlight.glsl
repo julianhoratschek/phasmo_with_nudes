@@ -11,5 +11,5 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     float intensity = a * mix(0.0, 1.0, 1.0 - length(center_uv) * 1.5);
 
-    fragColor = texture(iChannel0, uv) * intensity;
+    fragColor = texture(iChannel0, uv) * intensity * mix(0.2, 1.0, cos(noise1(iTime)));
 }

@@ -47,7 +47,9 @@ class GameView(arcade.View):
         self.channel_0 = self.shadertoy.ctx.framebuffer(color_attachments=[self.shadertoy.ctx.texture(size=window_size,
                                                                                                       components=4)])
         self.shadertoy.channel_0 = self.channel_0.color_attachments[0]
-        self.mouse_position = (0.0, 0.0)
+
+        self.mouse_position: tuple[float, float] = (0.0, 0.0)
+        self.elapsed_time: float = 0.0
 
     def on_draw(self):
         # TODO Draw everything
@@ -61,11 +63,11 @@ class GameView(arcade.View):
         self.clear()
 
         # self.shadertoy.program['playerPosition'] = self.player.position
-        self.shadertoy.render(mouse_position=self.mouse_position)
+        self.shadertoy.render(mouse_position=self.mouse_position, time=self.elapsed_time)
 
         self.scene.draw(pixelated=True)
 
-        self.player.draw_hit_box(color=arcade.color.RED)
+        # self.player.draw_hit_box(color=arcade.color.RED)
 
         # TODO UI Cam
 
@@ -86,6 +88,8 @@ class GameView(arcade.View):
 
         self.scene.update()
         self.follow_player()
+
+        self.elapsed_time += delta_time
 
     def follow_player(self):
         self.cam.move_to((self.player.center_x - (self.cam.viewport_width * self.cam.zoom / 2),
