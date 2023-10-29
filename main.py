@@ -9,6 +9,7 @@ from arcade.experimental import Shadertoy
 # TODO: Ghost Backstory, different backstories "patched"a
 
 # TODO Furniture: Inventory, spawning backstory, more furniture
+# dwefdwef
 
 class GameView(arcade.View):
     DirectionKeys = {arcade.key.W: Direction.Up,
@@ -47,6 +48,7 @@ class GameView(arcade.View):
         self.channel_0 = self.shadertoy.ctx.framebuffer(color_attachments=[self.shadertoy.ctx.texture(size=window_size,
                                                                                                       components=4)])
         self.shadertoy.channel_0 = self.channel_0.color_attachments[0]
+        self.mouse_position = (0.0, 0.0)
 
     def on_draw(self):
         # TODO Draw everything
@@ -60,7 +62,7 @@ class GameView(arcade.View):
         self.clear()
 
         # self.shadertoy.program['playerPosition'] = self.player.position
-        self.shadertoy.render()
+        self.shadertoy.render(mouse_position=self.mouse_position)
 
         self.scene.draw(pixelated=True)
 
@@ -121,7 +123,7 @@ class GameView(arcade.View):
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
         # TODO Highlight items to interact with?
         # TODO turn player/FOV?
-        pass
+        self.mouse_position = (x, y)
 
     def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
         # TODO Scroll inventory?
