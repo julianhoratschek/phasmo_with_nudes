@@ -1,23 +1,12 @@
 import arcade
 
-
-class Entity(arcade.Sprite):
-    def __init__(self, iid: str, **kwargs):
-        super().__init__(**kwargs)
-
-        self.entity_id: str = iid
+from util.aseprite import Animation
 
 
-class Stairs(Entity):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+class Furniture(Animation):
+    Path: str = "res/sprites/furniture/"
 
-        self.destination = None
+    def __init__(self, name: str, **kwargs):
+        super().__init__(f"{Furniture.Path}/{name}.json", **kwargs)
 
-
-class Furniture(Entity):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-        self.can_interact: bool = False
 

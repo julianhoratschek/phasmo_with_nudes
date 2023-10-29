@@ -2,7 +2,7 @@ import arcade
 import json
 
 from pathlib import Path
-from .entity import Furniture, Stairs
+from .entity import Furniture
 
 
 class TileMap:
@@ -65,13 +65,16 @@ class TileMap:
         player = json_data["entities"]["Player"][0]
         self.player_pos = (player["x"] - self.width_half, self.height_half - player["y"])
 
-        #for furniture in entity_json["entities"]["Furniture"]:
-        #    new_furniture = Furniture(
-        #        iid=furniture["iid"],
-        #        center_x=furniture["x"],
-        #        center_y=furniture["y"])
-        #    new_furniture.can_interact = furniture["customFields"]["Interactable"]
-        #    self.furniture.append(new_furniture)
+        for name in ["Chair", "SmallTable", "Wardrobe", "SmallPlant", "Bed"]:
+            if name not in json_data["entities"]:
+                continue
+
+            for furniture in json_data["entities"][name]:
+                new_furniture = Furniture(
+                    name=name,
+                    center_x=furniture["x"] - self.width_half,
+                    center_y=self.height_half - furniture["y"])
+                self.furniture.append(new_furniture)
 
         #stairs_dict: dict[str:tuple[Stairs, str]] = dict()
 
