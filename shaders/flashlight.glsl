@@ -9,7 +9,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     float a = pow(dot(normalize(center_uv), normalize(center_mouse)), 6);
 
-    float intensity = a * mix(0.0, 1.0, 1.0 - length(center_uv));
+    float intensity = a * mix(0.0, 1.0, 1.0 - length(center_uv) * 1.5);
 
-    fragColor = texture(iChannel0, uv) * intensity* sin(iTime);
+    fragColor = texture(iChannel0, uv) * intensity;
 }
