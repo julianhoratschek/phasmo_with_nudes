@@ -46,7 +46,10 @@ class GameView(arcade.View):
         self.shadertoy = Shadertoy.create_from_file(size=window_size, path="shaders/shadow_test.glsl")
         self.channel_0 = self.shadertoy.ctx.framebuffer(color_attachments=[self.shadertoy.ctx.texture(size=window_size,
                                                                                                       components=4)])
+        self.channel_1 = self.shadertoy.ctx.framebuffer(color_attachments=[self.shadertoy.ctx.texture(size=window_size,
+                                                                                                      components=4)])
         self.shadertoy.channel_0 = self.channel_0.color_attachments[0]
+        self.shadertoy.channel_1 = self.channel_1.color_attachments[0]
 
         self.mouse_position: tuple[float, float] = (0.0, 0.0)
         self.elapsed_time: float = 0.0
@@ -56,13 +59,19 @@ class GameView(arcade.View):
         self.channel_0.use()
         self.channel_0.clear()
 
-        self.map.draw_level()
+        self.map.draw_opaque()
+
+        self.channel_1.use()
+        self.channel_1.clear()
+
+        self.map.draw_floor()
+        self.map.draw_opaque()
 
         self.window.use()
+
         self.cam.use()
         self.clear()
 
-        # self.shadertoy.program['playerPosition'] = self.player.position
         self.shadertoy.render(mouse_position=self.mouse_position, time=self.elapsed_time)
 
         self.scene.draw(pixelated=True)
