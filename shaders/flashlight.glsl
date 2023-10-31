@@ -6,7 +6,7 @@ uniform const float LightLength = 1.5;
 uniform const float Flicker = 0.004;
 
 float rand() {
-    return fract(sin(iTime * iMouse.x) * 1024);
+    return fract(sin(iTime) * 1000);
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
@@ -20,5 +20,5 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     float intensity = a * mix(0.0, 1.0, 1.0 - length(center_uv) * LightLength);
 
-    fragColor = texture(iChannel0, uv) * intensity * step(Flicker, rand());
+    fragColor = texture(iChannel0, uv) * intensity * step(0.02, rand() * 10);
 }
