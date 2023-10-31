@@ -55,7 +55,7 @@ class TileMap:
     def load_level(self, level_nr: int):
         lvl_path = TileMap.LevelPath / f"Level_{level_nr}"
         self.ceilings = arcade.Sprite(arcade.load_texture(lvl_path / "Ceilings.png"))
-        self.tile_map = arcade.Sprite(arcade.load_texture(lvl_path / "Walls.png"))
+        self.tile_map = arcade.Sprite(arcade.load_texture(lvl_path / "WallsNFloors.png"))
 
         with open(lvl_path / f"Collision.csv", "r") as rooms_file:
             for line in rooms_file.readlines():

@@ -9,7 +9,7 @@
 	"neighbourLevels": [],
 	"customFields" : {},
 	"layers": [
-		"Walls.png",
+		"WallsNFloors.png",
 		"Ceilings.png"
 	],
 	"entities": {
