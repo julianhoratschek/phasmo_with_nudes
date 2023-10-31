@@ -43,7 +43,7 @@ class GameView(arcade.View):
 
         window_size = self.window.get_size()
 
-        self.shadertoy = Shadertoy.create_from_file(size=window_size, path="shaders/flashlight.glsl")
+        self.shadertoy = Shadertoy.create_from_file(size=window_size, path="shaders/shadow_test.glsl")
         self.channel_0 = self.shadertoy.ctx.framebuffer(color_attachments=[self.shadertoy.ctx.texture(size=window_size,
                                                                                                       components=4)])
         self.shadertoy.channel_0 = self.channel_0.color_attachments[0]

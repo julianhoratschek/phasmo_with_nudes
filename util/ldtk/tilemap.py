@@ -26,9 +26,11 @@ class TileMap:
         self.player_pos: tuple[int, int] = (0, 0)
         # self.npc_pos: arcade.SpriteList = arcade.SpriteList()
 
-    def draw_level(self):
-        self.tile_map.draw(pixelated=True)
+    def draw_opaque(self):
         self.furniture.draw(pixelated=True)
+
+    def draw_floor(self):
+        self.tile_map.draw(pixelated=True)
         self.stairs.draw(pixelated=True)
 
     def pixel_to_tile(self, position: tuple[int, int]) -> tuple[int, int]:
