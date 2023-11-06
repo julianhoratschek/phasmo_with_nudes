@@ -48,6 +48,193 @@
 				"height": 32,
 				"color": 14120515,
 				"customFields" : {}
+			},
+			{
+				"id": "Chair",
+				"iid": "8970c7c0-6280-11ee-a458-93db93dd40c7",
+				"layer": "Entities",
+				"x": 1040,
+				"y": 496,
+				"width": 32,
+				"height": 32,
+				"color": 14120515,
+				"customFields" : {}
+			},
+			{
+				"id": "Chair",
+				"iid": "89d92680-6280-11ee-a458-9578a1ad4fd9",
+				"layer": "Entities",
+				"x": 912,
+				"y": 496,
+				"width": 32,
+				"height": 32,
+				"color": 14120515,
+				"customFields" : {}
+			},
+			{
+				"id": "Chair",
+				"iid": "8a165690-6280-11ee-a458-d7d5a4d405cd",
+				"layer": "Entities",
+				"x": 880,
+				"y": 592,
+				"width": 32,
+				"height": 32,
+				"color": 14120515,
+				"customFields" : {}
+			},
+			{
+				"id": "Chair",
+				"iid": "8a468e50-6280-11ee-a458-d94195c0d076",
+				"layer": "Entities",
+				"x": 976,
+				"y": 656,
+				"width": 32,
+				"height": 32,
+				"color": 14120515,
+				"customFields" : {}
+			},
+			{
+				"id": "Chair",
+				"iid": "8af39730-6280-11ee-a458-b976ac9c7ec0",
+				"layer": "Entities",
+				"x": 1008,
+				"y": 688,
+				"width": 32,
+				"height": 32,
+				"color": 14120515,
+				"customFields" : {}
+			},
+			{
+				"id": "Chair",
+				"iid": "8b268e10-6280-11ee-a458-497a1e0d35a0",
+				"layer": "Entities",
+				"x": 1040,
+				"y": 624,
+				"width": 32,
+				"height": 32,
+				"color": 14120515,
+				"customFields" : {}
+			},
+			{
+				"id": "Chair",
+				"iid": "8b6b3830-6280-11ee-a458-a96a0aff3796",
+				"layer": "Entities",
+				"x": 1008,
+				"y": 432,
+				"width": 32,
+				"height": 32,
+				"color": 14120515,
+				"customFields" : {}
+			},
+			{
+				"id": "Chair",
+				"iid": "8ba86840-6280-11ee-a458-eb9314061226",
+				"layer": "Entities",
+				"x": 976,
+				"y": 368,
+				"width": 32,
+				"height": 32,
+				"color": 14120515,
+				"customFields" : {}
+			},
+			{
+				"id": "Chair",
+				"iid": "8bdb5f20-6280-11ee-a458-b1887decc8ba",
+				"layer": "Entities",
+				"x": 944,
+				"y": 400,
+				"width": 32,
+				"height": 32,
+				"color": 14120515,
+				"customFields" : {}
+			},
+			{
+				"id": "Chair",
+				"iid": "8c10c700-6280-11ee-a458-d7a3837cad93",
+				"layer": "Entities",
+				"x": 1040,
+				"y": 400,
+				"width": 32,
+				"height": 32,
+				"color": 14120515,
+				"customFields" : {}
+			},
+			{
+				"id": "Chair",
+				"iid": "8c4396d0-6280-11ee-a458-f7e60fcb068c",
+				"layer": "Entities",
+				"x": 1200,
+				"y": 400,
+				"width": 32,
+				"height": 32,
+				"color": 14120515,
+				"customFields" : {}
+			},
+			{
+				"id": "Chair",
+				"iid": "8c73f5a0-6280-11ee-a458-590950d285de",
+				"layer": "Entities",
+				"x": 1200,
+				"y": 464,
+				"width": 32,
+				"height": 32,
+				"color": 14120515,
+				"customFields" : {}
+			},
+			{
+				"id": "Chair",
+				"iid": "8ca45470-6280-11ee-a458-e509f69362fb",
+				"layer": "Entities",
+				"x": 1264,
+				"y": 432,
+				"width": 32,
+				"height": 32,
+				"color": 14120515,
+				"customFields" : {}
+			},
+			{
+				"id": "Chair",
+				"iid": "8cd21b30-6280-11ee-a458-8123b720a12a",
+				"layer": "Entities",
+				"x": 1264,
+				"y": 368,
+				"width": 32,
+				"height": 32,
+				"color": 14120515,
+				"customFields" : {}
+			},
+			{
+				"id": "Chair",
+				"iid": "8d051210-6280-11ee-a458-8dbef6ca6ba7",
+				"layer": "Entities",
+				"x": 1168,
+				"y": 336,
+				"width": 32,
+				"height": 32,
+				"color": 14120515,
+				"customFields" : {}
+			},
+			{
+				"id": "Chair",
+				"iid": "8d3a79f0-6280-11ee-a458-a51ae0d169c9",
+				"layer": "Entities",
+				"x": 1136,
+				"y": 400,
+				"width": 32,
+				"height": 32,
+				"color": 14120515,
+				"customFields" : {}
+			},
+			{
+				"id": "Chair",
+				"iid": "8da570c0-6280-11ee-a458-8762919de6f9",
+				"layer": "Entities",
+				"x": 1232,
+				"y": 336,
+				"width": 32,
+				"height": 32,
+				"color": 14120515,
+				"customFields" : {}
 			}
 		],
 		"SmallTable": [
@@ -87,6 +274,127 @@
 				"height": 32,
 				"color": 15389866,
 				"customFields" : {}
+			},
+			{
+				"id": "Bed",
+				"iid": "8f6f8260-6280-11ee-a458-99f7c05716ba",
+				"layer": "Entities",
+				"x": 1232,
+				"y": 592,
+				"width": 64,
+				"height": 32,
+				"color": 15389866,
+				"customFields" : {}
+			},
+			{
+				"id": "Bed",
+				"iid": "8fbe65b0-6280-11ee-a458-576d269fc206",
+				"layer": "Entities",
+				"x": 1264,
+				"y": 656,
+				"width": 64,
+				"height": 32,
+				"color": 15389866,
+				"customFields" : {}
+			},
+			{
+				"id": "Bed",
+				"iid": "903da7d0-6280-11ee-a458-b38aaa86929b",
+				"layer": "Entities",
+				"x": 912,
+				"y": 624,
+				"width": 64,
+				"height": 32,
+				"color": 15389866,
+				"customFields" : {}
+			},
+			{
+				"id": "Bed",
+				"iid": "909e6570-6280-11ee-a458-154ceb496add",
+				"layer": "Entities",
+				"x": 464,
+				"y": 656,
+				"width": 64,
+				"height": 32,
+				"color": 15389866,
+				"customFields" : {}
+			},
+			{
+				"id": "Bed",
+				"iid": "90f9f2f0-6280-11ee-a458-257e2feabab1",
+				"layer": "Entities",
+				"x": 496,
+				"y": 304,
+				"width": 64,
+				"height": 32,
+				"color": 15389866,
+				"customFields" : {}
+			},
+			{
+				"id": "Bed",
+				"iid": "9131f2e0-6280-11ee-a458-bd0d979e9086",
+				"layer": "Entities",
+				"x": 400,
+				"y": 272,
+				"width": 64,
+				"height": 32,
+				"color": 15389866,
+				"customFields" : {}
+			},
+			{
+				"id": "Bed",
+				"iid": "916c8ae0-6280-11ee-a458-57b0f5ab0065",
+				"layer": "Entities",
+				"x": 496,
+				"y": 272,
+				"width": 64,
+				"height": 32,
+				"color": 15389866,
+				"customFields" : {}
+			},
+			{
+				"id": "Bed",
+				"iid": "922134e0-6280-11ee-a458-151549ff97db",
+				"layer": "Entities",
+				"x": 1072,
+				"y": 560,
+				"width": 64,
+				"height": 32,
+				"color": 15389866,
+				"customFields" : {}
+			},
+			{
+				"id": "Bed",
+				"iid": "928722a0-6280-11ee-a458-c554ab36e310",
+				"layer": "Entities",
+				"x": 1264,
+				"y": 528,
+				"width": 64,
+				"height": 32,
+				"color": 15389866,
+				"customFields" : {}
+			},
+			{
+				"id": "Bed",
+				"iid": "9315a700-6280-11ee-a458-5725e2836873",
+				"layer": "Entities",
+				"x": 1360,
+				"y": 688,
+				"width": 64,
+				"height": 32,
+				"color": 15389866,
+				"customFields" : {}
+			},
+			{
+				"id": "Bed",
+				"iid": "938fb900-6280-11ee-a458-d1700fffa056",
+				"layer": "Entities",
+				"x": 1264,
+				"y": 752,
+				"width": 64,
+				"height": 32,
+				"color": 15389866,
+				"customFields" : {}
 			}
 		],
 		"SmallPlant": [
@@ -121,6 +429,96 @@
 				"width": 32,
 				"height": 32,
 				"color": 7552569,
+				"customFields" : {}
+			},
+			{
+				"id": "SmallPlant",
+				"iid": "878b17d0-6280-11ee-a458-8d8dd69f0a08",
+				"layer": "Entities",
+				"x": 496,
+				"y": 560,
+				"width": 32,
+				"height": 32,
+				"color": 7552569,
+				"customFields" : {}
+			},
+			{
+				"id": "SmallPlant",
+				"iid": "87d20be0-6280-11ee-a458-d5edfae12e22",
+				"layer": "Entities",
+				"x": 432,
+				"y": 528,
+				"width": 32,
+				"height": 32,
+				"color": 7552569,
+				"customFields" : {}
+			},
+			{
+				"id": "SmallPlant",
+				"iid": "8809e4c0-6280-11ee-a458-0907f83d1980",
+				"layer": "Entities",
+				"x": 432,
+				"y": 464,
+				"width": 32,
+				"height": 32,
+				"color": 7552569,
+				"customFields" : {}
+			},
+			{
+				"id": "SmallPlant",
+				"iid": "883f4ca0-6280-11ee-a458-731753f5a845",
+				"layer": "Entities",
+				"x": 560,
+				"y": 496,
+				"width": 32,
+				"height": 32,
+				"color": 7552569,
+				"customFields" : {}
+			},
+			{
+				"id": "SmallPlant",
+				"iid": "88724380-6280-11ee-a458-cf87dc911d7c",
+				"layer": "Entities",
+				"x": 688,
+				"y": 528,
+				"width": 32,
+				"height": 32,
+				"color": 7552569,
+				"customFields" : {}
+			},
+			{
+				"id": "SmallPlant",
+				"iid": "88b985b0-6280-11ee-a458-a17f68403204",
+				"layer": "Entities",
+				"x": 720,
+				"y": 560,
+				"width": 32,
+				"height": 32,
+				"color": 7552569,
+				"customFields" : {}
+			},
+			{
+				"id": "SmallPlant",
+				"iid": "88f68eb0-6280-11ee-a458-edf088e5340a",
+				"layer": "Entities",
+				"x": 752,
+				"y": 528,
+				"width": 32,
+				"height": 32,
+				"color": 7552569,
+				"customFields" : {}
+			}
+		],
+		"BigPottedPlant_01": [
+			{
+				"id": "BigPottedPlant_01",
+				"iid": "1844fba0-6280-11ee-a384-35919de3ae8e",
+				"layer": "Entities",
+				"x": 1120,
+				"y": 512,
+				"width": 32,
+				"height": 32,
+				"color": 16690740,
 				"customFields" : {}
 			}
 		]

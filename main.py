@@ -3,13 +3,15 @@ from characters import Player, Direction
 from util.ldtk import TileMap
 
 from arcade.experimental import Shadertoy
+from random import choice
 
 # TODO: Spawns on Integer Grid
 # TODO: Ghost selects goal/lifetime
 # TODO: Ghost Backstory, different backstories "patched"a
 
 # TODO Furniture: Inventory, spawning backstory, more furniture
-#
+
+
 class GameView(arcade.View):
     DirectionKeys = {arcade.key.W: Direction.Up,
                      arcade.key.S: Direction.Down,
@@ -87,6 +89,9 @@ class GameView(arcade.View):
         # TODO NPC Interactions
         # TODO Player do move
         # TODO Camera movement
+        if not self.ghost.is_active:
+            self.map.set_on_free_tile(self.ghost, self.ghost.favourite_room)
+
         self.scene.update_animation(delta_time)
         self.scene.on_update(delta_time)
 

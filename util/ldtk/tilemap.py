@@ -22,7 +22,9 @@ class TileMap:
         self.ceilings: arcade.Sprite | None = None
         self.tile_map: arcade.Sprite | None = None
 
-        self.room_grid: list[list[int]] = []
+        self.collision_grid: list[list[int]] = []
+
+        self.room: dict[str, list[tuple[int, int]]] = dict()
         self.room_names: list[str] = []
 
         # self.stairs: arcade.SpriteList = arcade.SpriteList()
@@ -48,7 +50,13 @@ class TileMap:
 
     def wall_collision(self, at_position: tuple[int, int]) -> bool:
         x, y = self.pixel_to_tile(at_position)
-        return self.room_grid[y][x] != Collision.Floor
+        return self.collision_grid[y][x] != Collision.Floor
+
+    def set_on_free_tile(self, sprite: arcade.Sprite, room: str):
+        while True:
+            sprite.position = self.tile_to_pixel(choice(self.room[room]))
+            if not sprite.collides_with_list(self.furniture):
+                break
 
     def load_level(self, level_nr: int):
         lvl_path = TileMap.LevelPath / f"Level_{level_nr}"
@@ -58,7 +66,7 @@ class TileMap:
         # Load Collision
         with open(lvl_path / f"Collision.csv", "r") as rooms_file:
             for line in rooms_file.readlines():
-                self.room_grid.append([int(x) for x in line.split(",") if x.isdigit()])
+                self.collision_grid.append([int(x) for x in line.split(",") if x.isdigit()])
 
         # Load Global Data
         with open(f"res/maps/{TileMap.WorldName}.ldtk", "r") as map_file:
@@ -66,6 +74,15 @@ class TileMap:
 
         furniture_names = [entity_def["identifier"] for entity_def in world_data["defs"]["entities"]
                            if "furniture" in entity_def["tags"]]
+
+        # Load all room names
+        room_values = []
+        for layer_def in world_data["defs"]["layers"]:
+            if layer_def["identifier"] == "Rooms":
+                room_values = layer_def["intGridValues"]
+                break
+
+        self.room_names = [room_def["identifier"] for room_def in room_values]
 
         # Load Level Data
         with open(lvl_path / "data.json", "r") as data_file:
@@ -81,12 +98,27 @@ class TileMap:
             if name not in level_data["entities"]:
                 continue
 
+            # TODO Why BigPottedPlant_1 ???s
             for furniture in level_data["entities"][name]:
                 new_furniture = Furniture(
                     name=name,
                     center_x=furniture["x"] - self.width_half,
                     center_y=self.height_half - furniture["y"])
                 self.furniture.append(new_furniture)
+
+        #load room grid
+        with open(lvl_path / "Rooms.csv", "r") as grid_file:
+            for row, line in enumerate(grid_file.readlines()):
+                for col, room_int in enumerate(map(int, line.split(",")[:-1])):
+                    if room_int == 0:
+                        continue
+
+                    name = self.room_names[room_int-1]
+
+                    if name not in self.room:
+                        self.room[name] = []
+
+                    self.room[name].append((col, row))
 
         # stairs_dict: dict[str:tuple[Stairs, str]] = dict()
 
@@ -107,3 +139,4 @@ class TileMap:
         #         iid=npc["iid"],
         #         center_x=npc["x"],
         #         center_y=npc["y"]))
+

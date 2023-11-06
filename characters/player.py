@@ -2,7 +2,7 @@ from enum import Flag, auto
 
 import arcade.hitbox
 
-from util.aseprite import Animation
+from .actor import Actor
 
 
 class Direction(Flag):
@@ -13,7 +13,7 @@ class Direction(Flag):
     Right = auto()  # 0b1000
 
 
-class Player(Animation):
+class Player(Actor):
     def __init__(self, **kwargs):
         super().__init__("res/sprites/dude.json", **kwargs)
 
