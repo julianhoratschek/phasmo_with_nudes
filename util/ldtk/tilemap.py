@@ -6,7 +6,6 @@ from pathlib import Path
 from .entity import Furniture
 
 
-## Readable Collision
 class Collision(IntEnum):
     Floor = 1
     Wall = 2
@@ -36,7 +35,6 @@ class TileMap:
         # self.npc_pos: arcade.SpriteList = arcade.SpriteList()
 
     def draw_opaque(self):
-        ## Draw Opaque for shaders
         self.ceilings.draw(pixelated=True)
         self.furniture.draw(pixelated=True)
 
@@ -57,26 +55,19 @@ class TileMap:
         self.ceilings = arcade.Sprite(arcade.load_texture(lvl_path / "Ceilings.png"))
         self.tile_map = arcade.Sprite(arcade.load_texture(lvl_path / "WallsNFloors.png"))
 
+        # Load Collision
         with open(lvl_path / f"Collision.csv", "r") as rooms_file:
             for line in rooms_file.readlines():
                 self.room_grid.append([int(x) for x in line.split(",") if x.isdigit()])
 
-        # with open(f"res/maps/{TileMap.WorldName}.ldtk", "r") as map_file:
-        #    json_data = json.load(map_file)
-
-        # for layer in json_data["defs"]["layers"]:
-        #    if layer["identifier"] == "Rooms":
-        #        for room_name in layer["intGridValues"]:
-        #            self.room_names.append(room_name["identifier"])
-        #        break
-
-        ## Dynamic Loading of Furniture names by tag "furniture"
+        # Load Global Data
         with open(f"res/maps/{TileMap.WorldName}.ldtk", "r") as map_file:
             world_data = json.load(map_file)
 
         furniture_names = [entity_def["identifier"] for entity_def in world_data["defs"]["entities"]
                            if "furniture" in entity_def["tags"]]
 
+        # Load Level Data
         with open(lvl_path / "data.json", "r") as data_file:
             level_data = json.load(data_file)
 

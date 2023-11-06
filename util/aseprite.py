@@ -4,6 +4,9 @@ import json
 from pathlib import Path
 
 
+# TODO Oneshot Animation (+ on_finished?)
+# TODO Pingpong-Animation
+
 class Animation(arcade.Sprite):
     def __init__(self, file_name: str, **kwargs):
         super().__init__(**kwargs)
