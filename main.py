@@ -61,7 +61,6 @@ class GameView(arcade.View):
         self.elapsed_time: float = 0.0
 
     def on_draw(self):
-        # TODO Draw everything
         self.channel_0.use()
         self.channel_0.clear()
 

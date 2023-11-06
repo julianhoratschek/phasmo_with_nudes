@@ -42,10 +42,9 @@ class Ghost(Actor):
         self.goal: tuple[int, int] = (0, 0)
         self.respawn_timer: float = 0.0
         self.activity_timer: float = 0.0
+        self.is_active: bool = False
 
         self.visible = False
-
-        self.is_active: bool = False
 
     def on_update(self, delta_time: float = 1/60):
         if not self.is_active:

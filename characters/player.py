@@ -1,7 +1,5 @@
 from enum import Flag, auto
-
 import arcade.hitbox
-
 from .actor import Actor
 
 
@@ -33,7 +31,6 @@ class Player(Actor):
     # TODO Hiding
 
     def get_next_positions(self) -> list[tuple[int, int]]:
-        # CHANGED: You can unpack tuples in the for-loop
         for x, y in self.hit_box.get_adjusted_points():
             yield x + self.change_x, y + self.change_y
 
