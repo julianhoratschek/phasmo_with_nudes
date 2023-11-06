@@ -4,6 +4,7 @@ import json
 from enum import IntEnum
 from pathlib import Path
 from .entity import Furniture
+from random import choice
 
 
 class Collision(IntEnum):
@@ -47,6 +48,10 @@ class TileMap:
     def pixel_to_tile(self, position: tuple[int, int]) -> tuple[int, int]:
         return (int((position[0] + self.width_half) / TileMap.TileSize),
                 int((self.height_half - position[1]) / TileMap.TileSize))
+
+    def tile_to_pixel(self, position: tuple[int, int]) -> tuple[int, int]:
+        return (int(position[0] * TileMap.TileSize - self.width_half),
+                int(-position[1] * TileMap.TileSize + self.height_half))
 
     def wall_collision(self, at_position: tuple[int, int]) -> bool:
         x, y = self.pixel_to_tile(at_position)

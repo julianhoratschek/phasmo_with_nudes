@@ -1,5 +1,5 @@
 import arcade
-from characters import Player, Direction
+from characters import Player, Direction, Ghost
 from util.ldtk import TileMap
 
 from arcade.experimental import Shadertoy
@@ -42,6 +42,10 @@ class GameView(arcade.View):
         self.player: Player = Player()
         self.player.position = self.map.player_pos
         self.scene.add_sprite(name="player", sprite=self.player)
+
+        self.ghost: Ghost = Ghost(favourite_room=choice(self.map.room_names))
+        self.ghost.set_animation("walk")
+        self.scene.add_sprite(name="ghost", sprite=self.ghost)
 
         window_size = self.window.get_size()
 
