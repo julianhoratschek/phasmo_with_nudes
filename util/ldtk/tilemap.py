@@ -6,6 +6,17 @@ from pathlib import Path
 from .entity import Furniture
 from random import choice
 
+import heapq
+from dataclasses import dataclass, field
+
+
+@dataclass
+class Node:
+    position: tuple[int, int] = field(default=(0, 0), compare=False)
+    g_score: float = field(default=float('inf'), compare=False)
+    predecessor: "Node" = field(default=None, compare=False)
+    f_score: float = float('inf')
+
 
 class Collision(IntEnum):
     Floor = 1
@@ -13,11 +24,17 @@ class Collision(IntEnum):
     Ceiling = 3
 
 
+def astar_heuristic(from_tile, to_tile):
+    return (from_tile[0] - to_tile[0]) ** 2 + (from_tile[1] - to_tile[1]) ** 2
+
+
 class TileMap:
     WorldName: str = "phasmo_world"
 
     LevelPath: Path = Path(f"res/maps/{WorldName}/simplified")
     TileSize: int = 32
+
+    MovementDegrees: tuple[tuple[int, int]] = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1))
 
     def __init__(self):
         self.ceilings: arcade.Sprite | None = None
@@ -36,6 +53,61 @@ class TileMap:
 
         self.player_pos: tuple[int, int] = (0, 0)
         # self.npc_pos: arcade.SpriteList = arcade.SpriteList()
+
+    def neighbours(self, tile_position):
+        return [(x_pos, y_pos) for x_pos, y_pos in map(lambda p: (tile_position[0] + p[0], tile_position[1] + p[1]),
+                                                       TileMap.MovementDegrees)
+                if (-1 < x_pos < len(self.collision_grid) and
+                    -1 < y_pos < len(self.collision_grid[x_pos]) and
+                    self.collision_grid[x_pos][y_pos] == Collision.Floor)
+                ]
+
+    def astar_pixel_path(self, target_node) -> list[tuple[int, int]]:
+        result = [self.tile_to_pixel(target_node.position)]
+        current_node = target_node.predecessor
+        while current_node:
+            result.append(self.tile_to_pixel(current_node.position))
+            current_node = current_node.predecessor
+        return list(reversed(result))
+
+    def astar_path(self, from_tile, to_tile) -> list[tuple[int, int]]:
+        current_node = Node(position=from_tile, f_score=0.0)
+        open_list = [current_node]
+        closed_list = set()
+
+        while len(open_list):
+            current_node = heapq.heappop(open_list)
+            if current_node.position == to_tile:
+                return self.astar_pixel_path(current_node)
+
+            closed_list.add(current_node.position)
+
+            for successor_position in self.neighbours(current_node.position):
+                if successor_position in closed_list:
+                    continue
+
+                tentative_g = current_node.g_score + 1.0
+
+                successor = None
+                for listed in open_list:
+                    if successor_position == listed.position:
+                        successor = listed
+                        break
+
+                f_score = tentative_g + astar_heuristic(successor_position, to_tile)
+                if successor:
+                    if tentative_g >= successor.g_score:
+                        continue
+
+                    successor.f_score = f_score
+                    heapq.heapify(open_list)
+                else:
+                    successor = Node(position=successor_position,
+                                     g_score=tentative_g,
+                                     f_score=f_score,
+                                     predecessor=current_node)
+                    heapq.heappush(open_list, successor)
+        return []
 
     def draw_opaque(self):
         self.ceilings.draw(pixelated=True)
