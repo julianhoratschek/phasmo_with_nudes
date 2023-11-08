@@ -10,12 +10,15 @@ import heapq
 from dataclasses import dataclass, field
 
 
-@dataclass
 class Node:
-    position: tuple[int, int] = field(default=(0, 0), compare=False)
-    g_score: float = field(default=float('inf'), compare=False)
-    predecessor: "Node" = field(default=None, compare=False)
-    f_score: float = float('inf')
+    def __init__(self, position=(0, 0), g_score=float('inf'), f_score=float('inf'), predecessor=None):
+        self.position: tuple[int, int] = position
+        self.g_score: float = g_score
+        self.predecessor = predecessor
+        self.f_score: float = f_score
+
+    def __lt__(self, other):
+        return self.f_score < other.f_score
 
 
 class Collision(IntEnum):
@@ -34,7 +37,10 @@ class TileMap:
     LevelPath: Path = Path(f"res/maps/{WorldName}/simplified")
     TileSize: int = 32
 
-    MovementDegrees: tuple[tuple[int, int]] = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1))
+    MovementDegrees: tuple[tuple[int, int]] = ((-1, -1, 1), (-1, 0, 1),
+                                               (-1, 1, 1), (0, -1, 1),
+                                               (0, 1, 1), (1, -1, 1),
+                                               (1, 0, 1), (1, 1, 1))
 
     def __init__(self):
         self.ceilings: arcade.Sprite | None = None
@@ -54,9 +60,13 @@ class TileMap:
         self.player_pos: tuple[int, int] = (0, 0)
         # self.npc_pos: arcade.SpriteList = arcade.SpriteList()
 
+    def random_free_tile(self):
+        return choice(self.room[choice(list(self.room.keys()))])
+
     def neighbours(self, tile_position):
-        return [(x_pos, y_pos) for x_pos, y_pos in map(lambda p: (tile_position[0] + p[0], tile_position[1] + p[1]),
-                                                       TileMap.MovementDegrees)
+        return [((x_pos, y_pos), cost)
+                for x_pos, y_pos, cost in map(lambda p: (tile_position[0] + p[0], tile_position[1] + p[1], p[2]),
+                                              TileMap.MovementDegrees)
                 if (-1 < x_pos < len(self.collision_grid) and
                     -1 < y_pos < len(self.collision_grid[x_pos]) and
                     self.collision_grid[x_pos][y_pos] == Collision.Floor)
@@ -82,11 +92,11 @@ class TileMap:
 
             closed_list.add(current_node.position)
 
-            for successor_position in self.neighbours(current_node.position):
+            for successor_position, cost in self.neighbours(current_node.position):
                 if successor_position in closed_list:
                     continue
 
-                tentative_g = current_node.g_score + 1.0
+                tentative_g = current_node.g_score + cost
 
                 successor = None
                 for listed in open_list:

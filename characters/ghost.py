@@ -52,9 +52,10 @@ class Ghost(Actor):
             if self.respawn_timer < 0.0:
                 self.spawn()
         else:
-            self.activity_timer -= delta_time
+            # self.activity_timer -= delta_time
             if self.activity_timer < 0.0:
                 self.despawn()
+                return
 
     def spawn(self):
         self.visible = True
