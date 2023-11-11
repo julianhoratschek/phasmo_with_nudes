@@ -45,6 +45,7 @@ class TileMap:
     def __init__(self):
         self.ceilings: arcade.Sprite | None = None
         self.tile_map: arcade.Sprite | None = None
+        self.decoration: arcade.Sprite | None = None
 
         self.collision_grid: list[list[int]] = []
 
@@ -121,6 +122,7 @@ class TileMap:
 
     def draw_opaque(self):
         self.ceilings.draw(pixelated=True)
+        self.decoration.draw(pixelated=True)
         self.furniture.draw(pixelated=True)
 
     def draw_floor(self):
@@ -151,6 +153,7 @@ class TileMap:
         lvl_path = TileMap.LevelPath / f"Level_{level_nr}"
         self.ceilings = arcade.Sprite(arcade.load_texture(lvl_path / "Ceilings.png"))
         self.tile_map = arcade.Sprite(arcade.load_texture(lvl_path / "WallsNFloors.png"))
+        self.decoration = arcade.Sprite(arcade.load_texture(lvl_path / "Decoration.png"))
 
         # Load Collision
         with open(lvl_path / f"Collision.csv", "r") as rooms_file:
