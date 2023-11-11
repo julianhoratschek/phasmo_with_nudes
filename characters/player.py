@@ -35,7 +35,7 @@ class Player(Actor):
             yield x + self.change_x, y + self.change_y
 
     def on_collision(self):
-        self.change_x, self.change_y = 0.0, 0.0
+        self.stop()
 
     def on_update(self, delta_time: float = 1/60):
         self.change_x, self.change_y = 0.0, 0.0

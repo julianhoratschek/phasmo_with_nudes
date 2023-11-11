@@ -37,10 +37,10 @@ class TileMap:
     LevelPath: Path = Path(f"res/maps/{WorldName}/simplified")
     TileSize: int = 32
 
-    MovementDegrees: tuple[tuple[int, int]] = ((-1, -1, 1), (-1, 0, 1),
-                                               (-1, 1, 1), (0, -1, 1),
-                                               (0, 1, 1), (1, -1, 1),
-                                               (1, 0, 1), (1, 1, 1))
+    MovementDegrees: tuple[tuple[int, int, float]] = ((-1, -1, 1.5), (-1, 0, 1.0),
+                                                      (-1, 1, 1.5), (0, -1, 1.0),
+                                                      (0, 1, 1.0), (1, -1, 1.5),
+                                                      (1, 0, 1.0), (1, 1, 1.5))
 
     def __init__(self):
         self.ceilings: arcade.Sprite | None = None
@@ -64,16 +64,23 @@ class TileMap:
     def random_free_tile(self):
         return choice(self.room[choice(list(self.room.keys()))])
 
-    def neighbours(self, tile_position):
-        return [((x_pos, y_pos), cost)
-                for x_pos, y_pos, cost in map(lambda p: (tile_position[0] + p[0], tile_position[1] + p[1], p[2]),
-                                              TileMap.MovementDegrees)
-                if (-1 < x_pos < len(self.collision_grid) and
-                    -1 < y_pos < len(self.collision_grid[x_pos]) and
-                    self.collision_grid[x_pos][y_pos] == Collision.Floor)
-                ]
+    def neighbours(self, tile_position: tuple[int, int]) -> list[tuple[tuple[int, int], float]]:
+        for x_pos, y_pos, cost in TileMap.MovementDegrees:
+            x_yield, y_yield = tile_position[0] + x_pos, tile_position[1] + y_pos
+            if (-1 < x_yield < len(self.collision_grid)
+                    and -1 < y_yield < len(self.collision_grid[x_yield])
+                    and self.collision_grid[x_yield][y_yield] == Collision.Floor):
+                yield (x_yield, y_yield), cost
 
-    def astar_pixel_path(self, target_node) -> list[tuple[int, int]]:
+        #return [((x_pos, y_pos), cost)
+        #        for x_pos, y_pos, cost in map(lambda p: (tile_position[0] + p[0], tile_position[1] + p[1], p[2]),
+        #                                      TileMap.MovementDegrees)
+        #        if (-1 < x_pos < len(self.collision_grid) and
+        #            -1 < y_pos < len(self.collision_grid[x_pos]) and
+        #            self.collision_grid[x_pos][y_pos] == Collision.Floor)
+        #        ]
+
+    def astar_pixel_path(self, target_node: Node) -> list[tuple[int, int]]:
         result = [self.tile_to_pixel(target_node.position)]
         current_node = target_node.predecessor
         while current_node:
@@ -81,7 +88,7 @@ class TileMap:
             current_node = current_node.predecessor
         return list(reversed(result))
 
-    def astar_path(self, from_tile, to_tile) -> list[tuple[int, int]]:
+    def astar_path(self, from_tile: tuple[int, int], to_tile: tuple[int, int]) -> list[tuple[int, int]]:
         current_node = Node(position=from_tile, f_score=0.0)
         open_list = [current_node]
         closed_list = set()
@@ -122,11 +129,11 @@ class TileMap:
 
     def draw_opaque(self):
         self.ceilings.draw(pixelated=True)
-        self.decoration.draw(pixelated=True)
         self.furniture.draw(pixelated=True)
 
     def draw_floor(self):
         self.tile_map.draw(pixelated=True)
+        self.decoration.draw(pixelated=True)
         # self.stairs.draw(pixelated=True)
 
     def pixel_to_tile(self, position: tuple[int, int]) -> tuple[int, int]:

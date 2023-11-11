@@ -25,6 +25,8 @@ from random import random
 #  Mehrere Geister?
 #  Background-System
 
+# TODO Ghost state
+
 
 class Ghost(Actor):
 
@@ -47,17 +49,27 @@ class Ghost(Actor):
         self.visible = False
 
     def on_update(self, delta_time: float = 1/60):
+        # TODO Movement (dependant on state?)
+        # TODO Event (Event-Class? For different Events?)
+
         if not self.is_active:
             self.respawn_timer -= delta_time
             if self.respawn_timer < 0.0:
                 self.spawn()
         else:
-            # self.activity_timer -= delta_time
+            self.activity_timer -= delta_time
             if self.activity_timer < 0.0:
                 self.despawn()
                 return
 
+    # TODO: hunt-function
+    #   update player-position/last known position
+
+    # TODO: can_spawn
+
     def spawn(self):
+        # TODO: path-parameter
+        # TODO: Set State
         self.visible = True
         self.activity_timer = self.ActivityTimerMin + (self.ActivityTimerMax - self.ActivityTimerMin) * random()
         self.is_active = True
@@ -66,11 +78,5 @@ class Ghost(Actor):
         self.visible = False
         self.respawn_timer = self.RespawnTimerMin + (self.RespawnTimerMax - self.RespawnTimerMin) * random()
         self.is_active = False
-
-    def set_goal(self):
-        pass
-
-    def move_to(self):
-        pass
 
 
