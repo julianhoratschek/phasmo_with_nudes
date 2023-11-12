@@ -41,35 +41,54 @@ class Ghost(Actor):
         super().__init__(file_name="res/sprites/actors/ghost.json", **kwargs)
 
         self.favourite_room: str = favourite_room
-        self.goal: tuple[int, int] = (0, 0)
         self.respawn_timer: float = 0.0
         self.activity_timer: float = 0.0
-        self.is_active: bool = False
+        self.state: GhostState = GhostState.Inactive
+        self.path: list[tuple[int, int]] = []
+        self.path_index: int = 0
+
+        self.speed = 1.7
 
         self.visible = False
 
     def on_update(self, delta_time: float = 1/60):
         # TODO Movement (dependant on state?)
         # TODO Event (Event-Class? For different Events?)
-
-        if not self.is_active:
-            self.respawn_timer -= delta_time
-            if self.respawn_timer < 0.0:
-                self.spawn()
-        else:
-            self.activity_timer -= delta_time
-            if self.activity_timer < 0.0:
-                self.despawn()
+        match self.state:
+            case GhostState.Inactive:
+                self.respawn_timer -= delta_time
                 return
+
+            case GhostState.Standing:
+                self.activity_timer -= delta_time
+
+            case GhostState.Roaming:
+                self.activity_timer -= delta_time
+
+                distance = arcade.math.get_distance(*self.position, *self.path[self.path_index])
+
+                self.change_x = (self.path[self.path_index][0] - self.position[0]) / distance * self.speed
+                self.change_y = (self.path[self.path_index][1] - self.position[1]) / distance * self.speed
+
+                if distance < 5.0:
+                    if self.path_index == len(self.path) - 1:
+                        self.despawn()
+                    else:
+                        self.path_index += 1
+
+        if self.activity_timer < 0.0:
+            self.despawn()
 
     # TODO: hunt-function
     #   update player-position/last known position
 
-    # TODO: can_spawn
+    def is_active(self) -> bool:
+        return self.state != GhostState.Inactive and self.activity_timer >= 0.0
 
-    def spawn(self):
-        # TODO: path-parameter
-        # TODO: Set State
+    def can_spawn(self) -> bool:
+        return self.state == GhostState.Inactive and self.respawn_timer < 0.0
+
+    def spawn(self) -> GhostState:
         self.visible = True
         self.activity_timer = self.ActivityTimerMin + (self.ActivityTimerMax - self.ActivityTimerMin) * random()
         self.is_active = True
@@ -77,6 +96,6 @@ class Ghost(Actor):
     def despawn(self):
         self.visible = False
         self.respawn_timer = self.RespawnTimerMin + (self.RespawnTimerMax - self.RespawnTimerMin) * random()
-        self.is_active = False
-
+        self.state = GhostState.Inactive
+        self.stop()
 

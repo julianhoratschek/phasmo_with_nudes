@@ -1,5 +1,6 @@
 import arcade
 from characters import Player, Direction, Ghost
+from characters.ghost import GhostState
 from util.ldtk import TileMap
 
 from arcade.experimental import Shadertoy
@@ -22,11 +23,6 @@ class GameView(arcade.View):
         super().__init__()
 
         # TODO UI-Layer (Spritelist)
-        # TODO Veil-Layer
-        # TODO Layers for Environment (Floor, Decorations, Walls)
-        #   - Walls -> check collision, Furniture -> check collision
-        # TODO Interactable Layer
-        # TODO Player, Ghost, NPC
 
         self.scene: arcade.Scene = arcade.Scene()
 
@@ -61,16 +57,22 @@ class GameView(arcade.View):
         self.elapsed_time: float = 0.0
 
     def on_draw(self):
+        # Draw Shader
+
+        # Draw Light collisions: Walls and furniture
         self.channel_0.use()
         self.channel_0.clear()
 
         self.map.draw_opaque()
 
+        # Draw floor
         self.channel_1.use()
         self.channel_1.clear()
 
         self.map.draw_floor()
         self.map.draw_opaque()
+
+        # Blip Framebuffer onto window
 
         self.window.use()
 
@@ -83,25 +85,35 @@ class GameView(arcade.View):
 
         # self.player.draw_hit_box(color=arcade.color.RED)
 
-        # TODO UI Cam
-
     def on_update(self, delta_time):
-        # TODO Update Animations etc.
-
-        # TODO Ghost movement, Interactions, hunts
-        # TODO NPC Interactions
-        # TODO Player do move
-        # TODO Camera movement
-        if not self.ghost.is_active:
+        if self.ghost.is_active():
+            pass
+        elif self.ghost.can_spawn():
             self.map.set_on_free_tile(self.ghost, self.ghost.favourite_room)
+            match self.ghost.spawn():
+                case GhostState.Roaming:
+                    goal = self.map.random_free_tile()
+                    start = self.map.pixel_to_tile((int(self.ghost.center_x), int(self.ghost.center_y)))
+                    self.ghost.path = self.map.astar_path(start, goal)[1:]
+                    self.ghost.path_index = 0
+                case GhostState.Hunting:
+                    pass
+                case GhostState.HuntingSearch:
+                    pass
+                case GhostState.Standing:
+                    pass
 
         self.scene.update_animation(delta_time)
         self.scene.on_update(delta_time)
 
-        for next_position in self.player.get_next_positions():
-            if self.map.wall_collision(next_position):
-                self.player.on_collision()
-                break
+        # Use Generator-expression with any
+        if any(self.map.wall_collision(position) for position in self.player.get_next_positions()):
+            self.player.stop()
+
+        #for next_position in self.player.get_next_positions():
+        #    if self.map.wall_collision(next_position):
+        #        self.player.on_collision()
+        #        break
 
         self.scene.update()
         self.follow_player()
@@ -113,7 +125,6 @@ class GameView(arcade.View):
                           self.player.center_y - (self.cam.viewport_height * self.cam.zoom / 2)))
 
     def on_key_press(self, symbol: int, modifiers: int):
-        # TODO Player Movement
         # TODO Running?
         # TODO Crouching?
         # TODO Menu?
@@ -124,7 +135,6 @@ class GameView(arcade.View):
             self.player.direction |= GameView.DirectionKeys[symbol]
 
     def on_key_release(self, symbol: int, modifiers: int):
-        # TODO Not running forever
         # TODO stop placing Items?
         if symbol in GameView.DirectionKeys:
             self.player.direction &= ~GameView.DirectionKeys[symbol]
@@ -137,12 +147,11 @@ class GameView(arcade.View):
         pass
 
     def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
-        # TODO End things
+        # TODO End actions
         pass
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
         # TODO Highlight items to interact with?
-        # TODO turn player/FOV?
         self.mouse_position = (x, y)
 
     def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
