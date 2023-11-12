@@ -1,6 +1,7 @@
 import arcade
 from .actor import Actor
-from random import random
+from random import random, choice
+from enum import Enum
 
 # TODO
 #  Spawning (in festem Raum)
@@ -25,13 +26,19 @@ from random import random
 #  Mehrere Geister?
 #  Background-System
 
-# TODO Ghost state
+
+class GhostState(Enum):
+    Inactive = 0
+    Roaming = 1
+    Hunting = 2
+    HuntingSearch = 3
+    Standing = 4
 
 
 class Ghost(Actor):
 
     ActivityTimerMin: float = 2.3
-    ActivityTimerMax: float = 5.2
+    ActivityTimerMax: float = 9.2
     RespawnTimerMin: float = 0.7
     RespawnTimerMax: float = 1.2
 
@@ -91,7 +98,8 @@ class Ghost(Actor):
     def spawn(self) -> GhostState:
         self.visible = True
         self.activity_timer = self.ActivityTimerMin + (self.ActivityTimerMax - self.ActivityTimerMin) * random()
-        self.is_active = True
+        self.state = choice((GhostState.Roaming, GhostState.Standing))
+        return self.state
 
     def despawn(self):
         self.visible = False
