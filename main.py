@@ -6,8 +6,6 @@ from util.ldtk import TileMap
 from arcade.experimental import Shadertoy
 from random import choice
 
-# TODO: Spawns on Integer Grid
-# TODO: Ghost selects goal/lifetime
 # TODO: Ghost Backstory, different backstories "patched"a
 
 # TODO Furniture: Inventory, spawning backstory, more furniture
@@ -89,17 +87,17 @@ class GameView(arcade.View):
         if self.ghost.is_active():
             pass
         elif self.ghost.can_spawn():
-            self.map.set_on_free_tile(self.ghost, self.ghost.favourite_room)
-            match self.ghost.spawn():
+            spawn_tile = self.map.get_free_tile(self.ghost.favourite_room)
+            match self.ghost.spawn(self.map.tile_to_pixel(spawn_tile)):
                 case GhostState.Roaming:
-                    goal = self.map.random_free_tile()
-                    start = self.map.pixel_to_tile((int(self.ghost.center_x), int(self.ghost.center_y)))
-                    self.ghost.path = self.map.astar_path(start, goal)[1:]
-                    self.ghost.path_index = 0
+                    self.ghost.path = self.map.astar_path(spawn_tile, self.map.random_free_tile())[1:]
+
                 case GhostState.Hunting:
                     pass
+
                 case GhostState.HuntingSearch:
                     pass
+
                 case GhostState.Standing:
                     pass
 

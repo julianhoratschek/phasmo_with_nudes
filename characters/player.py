@@ -12,12 +12,13 @@ class Direction(Flag):
 
 
 class Player(Actor):
+    WalkingSpeed: float = 2.0
+    RunningSpeed: float = 2.7
+
     def __init__(self, **kwargs):
         super().__init__("res/sprites/dude.json", **kwargs)
 
         self.direction: Direction = Direction.Idle
-        self.speed: float = 2.0
-
         self.hit_box = arcade.hitbox.RotatableHitBox(points=[(-8, -16), (8, -16),
                                                              (8, -11), (-8, -11)])
 

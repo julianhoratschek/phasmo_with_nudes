@@ -4,18 +4,11 @@ from random import random, choice
 from enum import Enum
 
 # TODO
-#  Spawning (in festem Raum)
-#    In welchem Raum? Aussuchen? Festen Raum halten? Wo im Raum? (Kollision mit Entities)
 #    Raumwechsel
 #  Movement
 #    "Random" movement
-#      - Algorithmus A*
-#        - Graphenalgorithmus
-#        - Wegpunkte -> Optimalen Pfad finden (Tiles)
-#      - Spawned -> Timer -> Despawned (+ Huntzeit)
 #      - Zufälliges Ziel (Mehr im eigenen Raum) -> Erreicht despawned
 #        - Gewichtete Zielsetzung für eigenen Raum
-#      - Nach Despawn "Respawn-Timer"
 #    Gerichtete bewegung (Zum Spieler/Objekt zur Interaktion/fliehen)
 #       Hunting Verhalten
 #  Events
@@ -54,12 +47,9 @@ class Ghost(Actor):
         self.path: list[tuple[int, int]] = []
         self.path_index: int = 0
 
-        self.speed = 1.7
-
         self.visible = False
 
     def on_update(self, delta_time: float = 1/60):
-        # TODO Movement (dependant on state?)
         # TODO Event (Event-Class? For different Events?)
         match self.state:
             case GhostState.Inactive:
@@ -67,11 +57,9 @@ class Ghost(Actor):
                 return
 
             case GhostState.Standing:
-                self.activity_timer -= delta_time
+                pass
 
             case GhostState.Roaming:
-                self.activity_timer -= delta_time
-
                 distance = arcade.math.get_distance(*self.position, *self.path[self.path_index])
 
                 self.change_x = (self.path[self.path_index][0] - self.position[0]) / distance * self.speed
@@ -83,11 +71,9 @@ class Ghost(Actor):
                     else:
                         self.path_index += 1
 
+        self.activity_timer -= delta_time
         if self.activity_timer < 0.0:
             self.despawn()
-
-    # TODO: hunt-function
-    #   update player-position/last known position
 
     def is_active(self) -> bool:
         return self.state != GhostState.Inactive and self.activity_timer >= 0.0
@@ -95,8 +81,10 @@ class Ghost(Actor):
     def can_spawn(self) -> bool:
         return self.state == GhostState.Inactive and self.respawn_timer < 0.0
 
-    def spawn(self) -> GhostState:
+    def spawn(self, spawn_point: tuple[int, int]) -> GhostState:
         self.visible = True
+        self.position = spawn_point
+        self.path_index = 0
         self.activity_timer = self.ActivityTimerMin + (self.ActivityTimerMax - self.ActivityTimerMin) * random()
         self.state = choice((GhostState.Roaming, GhostState.Standing))
         return self.state

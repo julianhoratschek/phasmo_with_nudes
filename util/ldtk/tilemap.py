@@ -7,7 +7,6 @@ from .entity import Furniture
 from random import choice
 
 import heapq
-from dataclasses import dataclass, field
 
 
 class Node:
@@ -61,24 +60,17 @@ class TileMap:
         self.player_pos: tuple[int, int] = (0, 0)
         # self.npc_pos: arcade.SpriteList = arcade.SpriteList()
 
-    def random_free_tile(self):
+    def random_free_tile(self) -> tuple[int, int]:
         return choice(self.room[choice(list(self.room.keys()))])
 
     def neighbours(self, tile_position: tuple[int, int]) -> list[tuple[tuple[int, int], float]]:
         for x_pos, y_pos, cost in TileMap.MovementDegrees:
             x_yield, y_yield = tile_position[0] + x_pos, tile_position[1] + y_pos
+
             if (-1 < x_yield < len(self.collision_grid)
                     and -1 < y_yield < len(self.collision_grid[x_yield])
                     and self.collision_grid[x_yield][y_yield] == Collision.Floor):
                 yield (x_yield, y_yield), cost
-
-        #return [((x_pos, y_pos), cost)
-        #        for x_pos, y_pos, cost in map(lambda p: (tile_position[0] + p[0], tile_position[1] + p[1], p[2]),
-        #                                      TileMap.MovementDegrees)
-        #        if (-1 < x_pos < len(self.collision_grid) and
-        #            -1 < y_pos < len(self.collision_grid[x_pos]) and
-        #            self.collision_grid[x_pos][y_pos] == Collision.Floor)
-        #        ]
 
     def astar_pixel_path(self, target_node: Node) -> list[tuple[int, int]]:
         result = [self.tile_to_pixel(target_node.position)]
@@ -150,11 +142,13 @@ class TileMap:
                     and -1 < y < len(self.collision_grid[x])
                     and self.collision_grid[x][y] == Collision.Floor)
 
-    def set_on_free_tile(self, sprite: arcade.Sprite, room: str):
+    def get_free_tile(self, room_name: str) -> tuple[int, int] | None:
         while True:
-            sprite.position = self.tile_to_pixel(choice(self.room[room]))
-            if not sprite.collides_with_list(self.furniture):
-                break
+            tile = choice(self.room[room_name])
+            tile_px = self.tile_to_pixel(tile)
+            if not arcade.get_sprites_in_rect((tile_px[0] + 2, tile_px[0] + 30, tile_px[1] + 2, tile_px[1] + 30),
+                                              self.furniture):
+                return tile
 
     def load_level(self, level_nr: int):
         lvl_path = TileMap.LevelPath / f"Level_{level_nr}"

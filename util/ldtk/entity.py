@@ -2,6 +2,7 @@ import arcade
 
 from util.aseprite import Animation
 
+# TODO furniture overlapping
 
 class Furniture(Animation):
     Path: str = "res/sprites/furniture"
