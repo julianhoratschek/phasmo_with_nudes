@@ -81,11 +81,16 @@ class GameView(arcade.View):
 
         self.scene.draw(pixelated=True)
 
+        arcade.draw_line(*self.ghost.position, *self.map.lp, arcade.color.RED)
+        self.map.furniture.draw_hit_boxes(color=arcade.color.BLUE)
         # self.player.draw_hit_box(color=arcade.color.RED)
 
     def on_update(self, delta_time):
         if self.ghost.is_active():
-            pass
+            if self.map.has_line_of_sight(self.ghost.position, self.player.position):
+                print("I seee youuuuuuuu")
+            else:
+                print("booooooh")
         elif self.ghost.can_spawn():
             spawn_tile = self.map.get_free_tile(self.ghost.favourite_room)
             match self.ghost.spawn(self.map.tile_to_pixel(spawn_tile)):

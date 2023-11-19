@@ -51,14 +51,58 @@ class TileMap:
         self.room: dict[str, list[tuple[int, int]]] = dict()
         self.room_names: list[str] = []
 
-        # self.stairs: arcade.SpriteList = arcade.SpriteList()
-        self.furniture: arcade.SpriteList = arcade.SpriteList()
+        self.furniture: arcade.SpriteList = arcade.SpriteList(use_spatial_hash=True, spatial_hash_cell_size=32)
 
         self.width_half: int = 0
         self.height_half: int = 0
 
         self.player_pos: tuple[int, int] = (0, 0)
         # self.npc_pos: arcade.SpriteList = arcade.SpriteList()
+
+        self.lp = (0, 0)
+
+    def has_line_of_sight(self, observer: tuple[float, float], target: tuple[float, float]) -> bool:
+        x0, y0 = int(observer[0]), int(observer[1])
+        x1, y1 = int(target[0]), int(target[1])
+
+        dx = abs(x1 - x0)
+        sx = 1 if x0 < x1 else -1
+        dy = -abs(y1 - y0)
+        sy = 1 if y0 < y1 else -1
+        error = dx + dy
+
+        while True:
+            if coll := arcade.get_sprites_at_point((x0, y0), self.furniture):
+                print(coll)
+                for c in coll:
+                    c.color = arcade.color.RED
+                self.lp = (x0, y0)
+                return False
+
+            if self.wall_collision((x0, y0)):
+                print("wall coll")
+                self.lp = (x0, y0)
+                return False
+
+            if x0 == x1 and y0 == y1:
+                break
+
+            # TODO Raylength
+
+            e2 = 2 * error
+            if e2 >= dy:
+                if x0 == x1:
+                    break
+                error += dy
+                x0 += sx
+
+            if e2 <= dx:
+                if y0 == y1:
+                    break
+                error += dx
+                y0 += sy
+        self.lp = (x0, y0)
+        return True
 
     def random_free_tile(self) -> tuple[int, int]:
         return choice(self.room[choice(list(self.room.keys()))])
@@ -138,6 +182,7 @@ class TileMap:
 
     def wall_collision(self, at_position: tuple[int, int]) -> bool:
         x, y = self.pixel_to_tile(at_position)
+
         return not (-1 < x < len(self.collision_grid)
                     and -1 < y < len(self.collision_grid[x])
                     and self.collision_grid[x][y] == Collision.Floor)
