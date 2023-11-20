@@ -32,10 +32,13 @@ class Player(Actor):
     # TODO Hiding
 
     def get_next_positions(self) -> list[tuple[int, int]]:
+        """ Yields points of the player hitbox after moving without moving the sprite.
+        """
         for x, y in self.hit_box.get_adjusted_points():
             yield x + self.change_x, y + self.change_y
 
     def on_update(self, delta_time: float = 1/60):
+        # TODO Speedup on diagonals
         self.change_x, self.change_y = 0.0, 0.0
 
         if Direction.Up in self.direction:

@@ -2,6 +2,7 @@ import arcade
 from characters import Player, Direction, Ghost
 from characters.ghost import GhostState
 from util.ldtk import TileMap
+from util.pathfinding import TileMapPath
 
 from arcade.experimental import Shadertoy
 from random import choice
@@ -27,17 +28,19 @@ class GameView(arcade.View):
         self.ui_layer: arcade.SpriteList = arcade.SpriteList()
         self.scene.add_sprite_list(name="ui_layer", sprite_list=self.ui_layer)
 
-        self.map = TileMap()
-        self.map.load_level(level_nr=0)
+        self.tile_map = TileMap()
+        self.tile_map.load_level(level_nr=0)
+
+        self.paths = TileMapPath(self.tile_map)
 
         self.cam = arcade.Camera()
         self.cam.zoom = 0.7
 
         self.player: Player = Player()
-        self.player.position = self.map.player_pos
+        self.player.position = self.tile_map.player_pos
         self.scene.add_sprite(name="player", sprite=self.player)
 
-        self.ghost: Ghost = Ghost(favourite_room=choice(self.map.room_names))
+        self.ghost: Ghost = Ghost(favourite_room=choice(self.tile_map.room_names))
         self.ghost.set_animation("walk")
         self.scene.add_sprite(name="ghost", sprite=self.ghost)
 
@@ -60,15 +63,15 @@ class GameView(arcade.View):
         # Draw Light collisions: Walls and furniture
         self.channel_0.use()
         self.channel_0.clear()
-
-        self.map.draw_opaque()
+        # TODO: Do furniture and walls move? Otherwise this could be static.
+        self.tile_map.draw_opaque()
 
         # Draw floor
         self.channel_1.use()
         self.channel_1.clear()
 
-        self.map.draw_floor()
-        self.map.draw_opaque()
+        self.tile_map.draw_floor()
+        self.tile_map.draw_opaque()
 
         # Blip Framebuffer onto window
 
@@ -81,21 +84,19 @@ class GameView(arcade.View):
 
         self.scene.draw(pixelated=True)
 
-        arcade.draw_line(*self.ghost.position, *self.map.lp, arcade.color.RED)
-        self.map.furniture.draw_hit_boxes(color=arcade.color.BLUE)
         # self.player.draw_hit_box(color=arcade.color.RED)
 
     def on_update(self, delta_time):
         if self.ghost.is_active():
-            if self.map.has_line_of_sight(self.ghost.position, self.player.position):
+            if self.paths.has_line_of_sight(self.ghost.position, self.player.position):
                 print("I seee youuuuuuuu")
             else:
                 print("booooooh")
         elif self.ghost.can_spawn():
-            spawn_tile = self.map.get_free_tile(self.ghost.favourite_room)
-            match self.ghost.spawn(self.map.tile_to_pixel(spawn_tile)):
+            spawn_tile = self.tile_map.get_free_tile(self.ghost.favourite_room)
+            match self.ghost.spawn(self.tile_map.tile_to_pixel(spawn_tile)):
                 case GhostState.Roaming:
-                    self.ghost.path = self.map.astar_path(spawn_tile, self.map.random_free_tile())[1:]
+                    self.ghost.path = self.paths.get_path(spawn_tile, self.tile_map.random_free_tile())[1:]
 
                 case GhostState.Hunting:
                     pass
@@ -110,13 +111,8 @@ class GameView(arcade.View):
         self.scene.on_update(delta_time)
 
         # Use Generator-expression with any
-        if any(self.map.wall_collision(position) for position in self.player.get_next_positions()):
+        if any(self.tile_map.wall_collision(position) for position in self.player.get_next_positions()):
             self.player.stop()
-
-        #for next_position in self.player.get_next_positions():
-        #    if self.map.wall_collision(next_position):
-        #        self.player.on_collision()
-        #        break
 
         self.scene.update()
         self.follow_player()

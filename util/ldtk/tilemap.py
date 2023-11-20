@@ -6,19 +6,6 @@ from pathlib import Path
 from .entity import Furniture
 from random import choice
 
-import heapq
-
-
-class Node:
-    def __init__(self, position=(0, 0), g_score=float('inf'), f_score=float('inf'), predecessor=None):
-        self.position: tuple[int, int] = position
-        self.g_score: float = g_score
-        self.predecessor = predecessor
-        self.f_score: float = f_score
-
-    def __lt__(self, other):
-        return self.f_score < other.f_score
-
 
 class Collision(IntEnum):
     Floor = 1
@@ -26,20 +13,11 @@ class Collision(IntEnum):
     Ceiling = 3
 
 
-def astar_heuristic(from_tile, to_tile):
-    return (from_tile[0] - to_tile[0]) ** 2 + (from_tile[1] - to_tile[1]) ** 2
-
-
 class TileMap:
     WorldName: str = "phasmo_world"
 
     LevelPath: Path = Path(f"res/maps/{WorldName}/simplified")
     TileSize: int = 32
-
-    MovementDegrees: tuple[tuple[int, int, float]] = ((-1, -1, 1.5), (-1, 0, 1.0),
-                                                      (-1, 1, 1.5), (0, -1, 1.0),
-                                                      (0, 1, 1.0), (1, -1, 1.5),
-                                                      (1, 0, 1.0), (1, 1, 1.5))
 
     def __init__(self):
         self.ceilings: arcade.Sprite | None = None
@@ -57,111 +35,9 @@ class TileMap:
         self.height_half: int = 0
 
         self.player_pos: tuple[int, int] = (0, 0)
-        # self.npc_pos: arcade.SpriteList = arcade.SpriteList()
-
-        self.lp = (0, 0)
-
-    def has_line_of_sight(self, observer: tuple[float, float], target: tuple[float, float]) -> bool:
-        x0, y0 = int(observer[0]), int(observer[1])
-        x1, y1 = int(target[0]), int(target[1])
-
-        dx = abs(x1 - x0)
-        sx = 1 if x0 < x1 else -1
-        dy = -abs(y1 - y0)
-        sy = 1 if y0 < y1 else -1
-        error = dx + dy
-
-        while True:
-            if coll := arcade.get_sprites_at_point((x0, y0), self.furniture):
-                print(coll)
-                for c in coll:
-                    c.color = arcade.color.RED
-                self.lp = (x0, y0)
-                return False
-
-            if self.wall_collision((x0, y0)):
-                print("wall coll")
-                self.lp = (x0, y0)
-                return False
-
-            if x0 == x1 and y0 == y1:
-                break
-
-            # TODO Raylength aa
-
-            e2 = 2 * error
-            if e2 >= dy:
-                if x0 == x1:
-                    break
-                error += dy
-                x0 += sx
-
-            if e2 <= dx:
-                if y0 == y1:
-                    break
-                error += dx
-                y0 += sy
-        self.lp = (x0, y0)
-        return True
 
     def random_free_tile(self) -> tuple[int, int]:
         return choice(self.room[choice(list(self.room.keys()))])
-
-    def neighbours(self, tile_position: tuple[int, int]) -> list[tuple[tuple[int, int], float]]:
-        for x_pos, y_pos, cost in TileMap.MovementDegrees:
-            x_yield, y_yield = tile_position[0] + x_pos, tile_position[1] + y_pos
-
-            if (-1 < x_yield < len(self.collision_grid)
-                    and -1 < y_yield < len(self.collision_grid[x_yield])
-                    and self.collision_grid[x_yield][y_yield] == Collision.Floor):
-                yield (x_yield, y_yield), cost
-
-    def astar_pixel_path(self, target_node: Node) -> list[tuple[int, int]]:
-        result = [self.tile_to_pixel(target_node.position)]
-        current_node = target_node.predecessor
-        while current_node:
-            result.append(self.tile_to_pixel(current_node.position))
-            current_node = current_node.predecessor
-        return list(reversed(result))
-
-    def astar_path(self, from_tile: tuple[int, int], to_tile: tuple[int, int]) -> list[tuple[int, int]]:
-        current_node = Node(position=from_tile, f_score=0.0)
-        open_list = [current_node]
-        closed_list = set()
-
-        while len(open_list):
-            current_node = heapq.heappop(open_list)
-            if current_node.position == to_tile:
-                return self.astar_pixel_path(current_node)
-
-            closed_list.add(current_node.position)
-
-            for successor_position, cost in self.neighbours(current_node.position):
-                if successor_position in closed_list:
-                    continue
-
-                tentative_g = current_node.g_score + cost
-
-                successor = None
-                for listed in open_list:
-                    if successor_position == listed.position:
-                        successor = listed
-                        break
-
-                f_score = tentative_g + astar_heuristic(successor_position, to_tile)
-                if successor:
-                    if tentative_g >= successor.g_score:
-                        continue
-
-                    successor.f_score = f_score
-                    heapq.heapify(open_list)
-                else:
-                    successor = Node(position=successor_position,
-                                     g_score=tentative_g,
-                                     f_score=f_score,
-                                     predecessor=current_node)
-                    heapq.heappush(open_list, successor)
-        return []
 
     def draw_opaque(self):
         self.ceilings.draw(pixelated=True)
@@ -196,6 +72,7 @@ class TileMap:
                 return tile
 
     def load_level(self, level_nr: int):
+        # TODO Reloadability
         lvl_path = TileMap.LevelPath / f"Level_{level_nr}"
         self.ceilings = arcade.Sprite(arcade.load_texture(lvl_path / "Ceilings.png"))
         self.tile_map = arcade.Sprite(arcade.load_texture(lvl_path / "WallsNFloors.png"))
@@ -235,11 +112,13 @@ class TileMap:
         furniture_names = [entity_def["identifier"] for entity_def in world_data["defs"]["entities"]
                            if "furniture" in entity_def["tags"]]
 
+        self.furniture.clear()
         for name in furniture_names:
             if name not in level_data["entities"]:
                 continue
 
             for furniture in level_data["entities"][name]:
+                # TODO Hitboxes
                 new_furniture = Furniture(
                     name=name,
                     center_x=furniture["x"] - self.width_half,

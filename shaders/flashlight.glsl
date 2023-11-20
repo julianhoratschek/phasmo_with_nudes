@@ -5,8 +5,8 @@ float rand() {
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
     vec2 uv = fragCoord / iResolution.xy;
-    fragColor = texture(iChannel1, uv);
-    return;
+   /* fragColor = texture(iChannel1, uv);
+    return;*/
     vec2 mouse_uv = iMouse.xy / iResolution.xy;
 
     vec2 center = uv - vec2(0.5, 0.5);
